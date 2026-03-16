@@ -2,16 +2,6 @@
 	"configurations" : 
 	[
 		{
-			"abstractTargets" : 
-			[
-				{
-					"directoryIndex" : 1,
-					"id" : "stm32cubemx::@768a070a0fe75716b479",
-					"jsonFile" : "target-stm32cubemx-Debug-e7d9c01adf51eec0cd54.json",
-					"name" : "stm32cubemx",
-					"projectIndex" : 0
-				}
-			],
 			"directories" : 
 			[
 				{
@@ -20,7 +10,7 @@
 					[
 						1
 					],
-					"jsonFile" : "directory-.-Debug-9ad1a58d4644cf6543fa.json",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.22"
@@ -33,12 +23,8 @@
 					]
 				},
 				{
-					"abstractTargetIndexes" : 
-					[
-						0
-					],
 					"build" : "cmake/stm32cubemx",
-					"jsonFile" : "directory-cmake.stm32cubemx-Debug-56097c516e47400ad7a1.json",
+					"jsonFile" : "directory-cmake.stm32cubemx-Debug-a874d3cc84b5982fda2e.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.22"
@@ -57,10 +43,6 @@
 			"projects" : 
 			[
 				{
-					"abstractTargetIndexes" : 
-					[
-						0
-					],
 					"directoryIndexes" : 
 					[
 						0,
@@ -80,21 +62,21 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "H7_test::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-H7_test-Debug-a3d8d474c242a83ea56f.json",
+					"jsonFile" : "target-H7_test-Debug-2586a4e11c3414b53d43.json",
 					"name" : "H7_test",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 1,
 					"id" : "STM32_Drivers::@768a070a0fe75716b479",
-					"jsonFile" : "target-STM32_Drivers-Debug-b69a5c7473084e593939.json",
+					"jsonFile" : "target-STM32_Drivers-Debug-614e9f94fc76ca760b65.json",
 					"name" : "STM32_Drivers",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 1,
 					"id" : "USB_Device_Library::@768a070a0fe75716b479",
-					"jsonFile" : "target-USB_Device_Library-Debug-1dbef1fc88c9e07fc9d7.json",
+					"jsonFile" : "target-USB_Device_Library-Debug-25d9bef02c67ce95c168.json",
 					"name" : "USB_Device_Library",
 					"projectIndex" : 0
 				}
@@ -104,12 +86,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/build/Debug",
-		"source" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT"
+		"build" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug",
+		"source" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 9
+		"minor" : 6
 	}
 }

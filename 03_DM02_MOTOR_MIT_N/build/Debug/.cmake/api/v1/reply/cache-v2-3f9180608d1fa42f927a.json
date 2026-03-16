@@ -15,7 +15,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-addr2line"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-addr2line.exe"
 		},
 		{
 			"name" : "CMAKE_AR",
@@ -31,7 +31,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-ar"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-ar.exe"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_AR",
@@ -47,7 +47,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-gcc-ar"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc-ar.exe"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_RANLIB",
@@ -63,7 +63,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-gcc-ranlib"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc-ranlib.exe"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_WORKS",
@@ -179,7 +179,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/build/Debug"
+			"value" : "e:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -191,7 +191,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "4"
+			"value" : "3"
 		},
 		{
 			"name" : "CMAKE_CACHE_MINOR_VERSION",
@@ -203,7 +203,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "2"
+			"value" : "28"
 		},
 		{
 			"name" : "CMAKE_CACHE_PATCH_VERSION",
@@ -215,7 +215,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "3"
+			"value" : "1"
 		},
 		{
 			"name" : "CMAKE_COMMAND",
@@ -227,7 +227,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/homebrew/bin/cmake"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/CMake/bin/cmake.exe"
 		},
 		{
 			"name" : "CMAKE_CPACK_COMMAND",
@@ -239,7 +239,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/homebrew/bin/cpack"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/CMake/bin/cpack.exe"
 		},
 		{
 			"name" : "CMAKE_CTEST_COMMAND",
@@ -251,7 +251,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/homebrew/bin/ctest"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/CMake/bin/ctest.exe"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_AR",
@@ -267,7 +267,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-gcc-ar"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc-ar.exe"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_RANLIB",
@@ -283,7 +283,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-gcc-ranlib"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc-ranlib.exe"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS",
@@ -379,7 +379,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-gcc-ar"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc-ar.exe"
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_RANLIB",
@@ -395,7 +395,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-gcc-ranlib"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc-ranlib.exe"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS",
@@ -491,7 +491,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "CMAKE_DLLTOOL-NOTFOUND"
+			"value" : "D:/MyMinGW/mingw64/bin/dlltool.exe"
 		},
 		{
 			"name" : "CMAKE_EDIT_COMMAND",
@@ -503,7 +503,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/homebrew/bin/ccmake"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/CMake/bin/cmake-gui.exe"
 		},
 		{
 			"name" : "CMAKE_EXECUTABLE_FORMAT",
@@ -598,22 +598,6 @@
 			"value" : ""
 		},
 		{
-			"name" : "CMAKE_EXPORT_BUILD_DATABASE",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "Enable/Disable output of build database during the build."
-				}
-			],
-			"type" : "BOOL",
-			"value" : ""
-		},
-		{
 			"name" : "CMAKE_EXTRA_GENERATOR",
 			"properties" : 
 			[
@@ -635,7 +619,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/build/Debug/CMakeFiles/pkgRedirects"
+			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -695,7 +679,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT"
+			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -707,19 +691,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/usr/local"
-		},
-		{
-			"name" : "CMAKE_LIST_FILE_NAME",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Name of CMakeLists files to read"
-				}
-			],
-			"type" : "INTERNAL",
-			"value" : "CMakeLists.txt"
+			"value" : "C:/Program Files (x86)/H7_test"
 		},
 		{
 			"name" : "CMAKE_MAKE_PROGRAM",
@@ -735,7 +707,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/ninja"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/Ninja/bin/ninja.exe"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -831,7 +803,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-nm"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-nm.exe"
 		},
 		{
 			"name" : "CMAKE_NUMBER_OF_MAKEFILES",
@@ -859,7 +831,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-objdump"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-objdump.exe"
 		},
 		{
 			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
@@ -872,18 +844,6 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "1"
-		},
-		{
-			"name" : "CMAKE_PROJECT_COMPAT_VERSION",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : ""
 		},
 		{
 			"name" : "CMAKE_PROJECT_DESCRIPTION",
@@ -922,18 +882,6 @@
 			"value" : "H7_test"
 		},
 		{
-			"name" : "CMAKE_PROJECT_SPDX_LICENSE",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : ""
-		},
-		{
 			"name" : "CMAKE_RANLIB",
 			"properties" : 
 			[
@@ -947,7 +895,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-ranlib"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-ranlib.exe"
 		},
 		{
 			"name" : "CMAKE_READELF",
@@ -963,7 +911,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-readelf"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-readelf.exe"
 		},
 		{
 			"name" : "CMAKE_ROOT",
@@ -975,7 +923,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/homebrew/share/cmake"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/CMake/share/cmake-3.28"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1099,7 +1047,7 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the archiver during the creation of static libraries during all build types."
+					"value" : "Flags used by the linker during the creation of static libraries during all build types."
 				}
 			],
 			"type" : "STRING",
@@ -1115,7 +1063,7 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the archiver during the creation of static libraries during DEBUG builds."
+					"value" : "Flags used by the linker during the creation of static libraries during DEBUG builds."
 				}
 			],
 			"type" : "STRING",
@@ -1131,7 +1079,7 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the archiver during the creation of static libraries during MINSIZEREL builds."
+					"value" : "Flags used by the linker during the creation of static libraries during MINSIZEREL builds."
 				}
 			],
 			"type" : "STRING",
@@ -1147,7 +1095,7 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the archiver during the creation of static libraries during RELEASE builds."
+					"value" : "Flags used by the linker during the creation of static libraries during RELEASE builds."
 				}
 			],
 			"type" : "STRING",
@@ -1163,7 +1111,7 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the archiver during the creation of static libraries during RELWITHDEBINFO builds."
+					"value" : "Flags used by the linker during the creation of static libraries during RELWITHDEBINFO builds."
 				}
 			],
 			"type" : "STRING",
@@ -1183,7 +1131,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/homebrew/bin/arm-none-eabi-strip"
+			"value" : "D:/MySTM32CubeCLT/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-strip.exe"
 		},
 		{
 			"name" : "CMAKE_TAPI",
@@ -1211,19 +1159,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/cmake/gcc-arm-none-eabi.cmake"
-		},
-		{
-			"name" : "CMAKE_UNAME",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "uname command"
-				}
-			],
-			"type" : "INTERNAL",
-			"value" : "/usr/bin/uname"
+			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/cmake/gcc-arm-none-eabi.cmake"
 		},
 		{
 			"name" : "CMAKE_VERBOSE_MAKEFILE",
@@ -1251,7 +1187,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/build/Debug"
+			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug"
 		},
 		{
 			"name" : "H7_test_IS_TOP_LEVEL",
@@ -1275,7 +1211,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT"
+			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N"
 		}
 	],
 	"kind" : "cache",
