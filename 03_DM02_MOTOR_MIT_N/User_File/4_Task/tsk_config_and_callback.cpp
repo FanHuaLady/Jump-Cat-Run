@@ -14,18 +14,19 @@
 #include "gimbal_yaw_pitch_direct.h"
 
 // LED灯
-int32_t red = 0;
-int32_t green = 12;
-int32_t blue = 12;
-bool red_minus_flag = false;
-bool green_minus_flag = false;
-bool blue_minus_flag = true;
+static int32_t red = 0;
+static int32_t green = 12;
+static int32_t blue = 12;
+static bool red_minus_flag = false;
+static bool green_minus_flag = false;
+static bool blue_minus_flag = true;
 
-Class_Motor_DM_Normal motor_dm;
+static Class_Motor_DM_Normal motor_dm;
 
-bool init_finished = false;
+// static bool init_finished = false;
 
-void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
+/*
+static void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
 {
     switch (Header.Identifier)
     {
@@ -34,8 +35,10 @@ void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
         break;
     }
 }
+*/
 
-void Task1ms_Callback()
+/*
+static void Task1ms_Callback()
 {
     static int mod10 = 0;
     mod10++;
@@ -94,9 +97,6 @@ void Task1ms_Callback()
         }
 
         BSP_WS2812.Set_RGB(red, green, blue);
-        // BSP_WS2812.Set_RGB(0, 0, 0);
-
-        // 发送实例
         BSP_WS2812.TIM_10ms_Write_PeriodElapsedCallback();
     }
 
@@ -117,7 +117,7 @@ void Task1ms_Callback()
 
     static uint32_t tick_dm = 0;
     tick_dm++;
-    float target_angle = 1.0f * sinf(2.0f * 3.14159f * tick_dm / 2000.0f); // 周期 2 秒
+    float target_angle = 1.0f * sinf(2.0f * 3.14159f * tick_dm / 2000.0f);
     motor_dm.Set_Control_Angle(target_angle);
     motor_dm.Set_K_P(0.0f);
     motor_dm.Set_K_D(1.0f);
@@ -129,30 +129,31 @@ void Task1ms_Callback()
     // 在错误时自动清除错误并使能
     motor_dm.TIM_Send_PeriodElapsedCallback();
 }
+*/
+
 
 void Task_Init()
 {
-    SYS_Timestamp.Init(&htim5);        // 初始化时间戳
-    CAN_Init(&hfdcan1, CAN1_Callback); // 电机的CAN
-    SPI_Init(&hspi6, nullptr);         // WS2812的SPI
-    BSP_WS2812.Init(0, 0, 0);          // 初始化彩灯
+    SYS_Timestamp.Init(&htim5);                                     // 初始化时间戳
+    // CAN_Init(&hfdcan1, CAN1_Callback);                              // 电机的CAN
+    SPI_Init(&hspi6, nullptr);                                      // WS2812的SPI
+    BSP_WS2812.Init(0, 0, 0);                                       // 初始化彩灯
 
     // 初始化电机
     motor_dm.Init(&hfdcan1, 0x00, 0x01, Motor_DM_Control_Method_NORMAL_MIT, 12.5f, 25.0f, 10.0f, 10.261194f);
+    motor_dm.CAN_Send_Enter();                                      // 使能电机
 
-    // 使能电机
-    motor_dm.CAN_Send_Enter();
+    HAL_TIM_Base_Start_IT(&htim7);                                  // 开启定时器中断
 
-    // 开启定时器中断
-    HAL_TIM_Base_Start_IT(&htim7);
-
-    init_finished = true; // 标记初始化完成
+    init_finished = true;                                           // 标记初始化完成
 }
 
 void Task_Loop()
 {
     Namespace_SYS_Timestamp::Delay_Millisecond(1);
 }
+
+/*
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -165,3 +166,5 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         Task1ms_Callback();
     }
 }
+
+*/

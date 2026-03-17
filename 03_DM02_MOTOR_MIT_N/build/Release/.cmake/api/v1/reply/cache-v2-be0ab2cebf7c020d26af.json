@@ -167,7 +167,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "Debug"
+			"value" : "Release"
 		},
 		{
 			"name" : "CMAKE_CACHEFILE_DIR",
@@ -179,7 +179,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "e:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug"
+			"value" : "e:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Release"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -619,7 +619,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug/CMakeFiles/pkgRedirects"
+			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Release/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -1187,7 +1187,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug"
+			"value" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Release"
 		},
 		{
 			"name" : "H7_test_IS_TOP_LEVEL",

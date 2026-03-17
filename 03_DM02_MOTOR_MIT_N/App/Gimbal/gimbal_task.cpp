@@ -4,15 +4,12 @@
 
 #define GIMBAL_TASK_INIT_TIME 200
 
+Gimbal gimbal;                          // 云台对象
+
 void gimbal_task(void const * pvParameters)
 {
-
-    // 云台发布数据
-    // GimbalPublish();                                                    // 不确定作用
-    // 等待陀螺仪任务更新陀螺仪数据
-    // vTaskDelay(GIMBAL_TASK_INIT_TIME);                                  // 等待一段时间
-    // 云台初始化
-    // GimbalInit();                                                       // 初始化PID还有电机
+    HAL_Delay(GIMBAL_TASK_INIT_TIME);                                   // 等待陀螺仪任务更新陀螺仪数据
+    gimbal.Init();                                                      // 云台初始化
 
     // Gimbal gimbal;
     // gimbal.Gimbal_Init();                                                  // 初始化云台

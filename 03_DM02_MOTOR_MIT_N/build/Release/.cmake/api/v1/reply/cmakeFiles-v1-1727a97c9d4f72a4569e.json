@@ -19,7 +19,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/Debug/CMakeFiles/3.28.1/CMakeSystem.cmake"
+			"path" : "build/Release/CMakeFiles/3.28.1/CMakeSystem.cmake"
 		},
 		{
 			"path" : "cmake/gcc-arm-none-eabi.cmake"
@@ -511,7 +511,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/Debug/CMakeFiles/3.28.1/CMakeCCompiler.cmake"
+			"path" : "build/Release/CMakeFiles/3.28.1/CMakeCCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -970,7 +970,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/Debug/CMakeFiles/3.28.1/CMakeCXXCompiler.cmake"
+			"path" : "build/Release/CMakeFiles/3.28.1/CMakeCXXCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -1084,7 +1084,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/Debug/CMakeFiles/3.28.1/CMakeCCompiler.cmake"
+			"path" : "build/Release/CMakeFiles/3.28.1/CMakeCCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -1173,7 +1173,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/Debug/CMakeFiles/3.28.1/CMakeCXXCompiler.cmake"
+			"path" : "build/Release/CMakeFiles/3.28.1/CMakeCXXCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -1212,7 +1212,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "build/Debug/CMakeFiles/3.28.1/CMakeASMCompiler.cmake"
+			"path" : "build/Release/CMakeFiles/3.28.1/CMakeASMCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -1256,7 +1256,7 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug",
+		"build" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Release",
 		"source" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N"
 	},
 	"version" : 

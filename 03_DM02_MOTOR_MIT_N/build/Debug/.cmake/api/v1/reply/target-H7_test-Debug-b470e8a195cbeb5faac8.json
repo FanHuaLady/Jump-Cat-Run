@@ -44,13 +44,13 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 70,
+				"line" : 74,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 83,
+				"line" : 88,
 				"parent" : 0
 			},
 			{
@@ -62,7 +62,7 @@
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 73,
+				"line" : 77,
 				"parent" : 0
 			}
 		]
@@ -73,7 +73,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -O0 -g3 -std=gnu11"
+					"fragment" : " -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -O0 -g3 -std=gnu11"
 				}
 			],
 			"defines" : 
@@ -191,6 +191,10 @@
 				},
 				{
 					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/JY61P"
+				},
+				{
+					"backtrace" : 4,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/Key"
 				},
 				{
@@ -230,8 +234,16 @@
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/4_Task"
 				},
 				{
+					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/5_Test"
+				},
+				{
 					"backtrace" : 5,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/Core/Inc"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/App/Gimbal"
 				},
 				{
 					"backtrace" : 5,
@@ -346,7 +358,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -fno-rtti -fno-exceptions -fno-threadsafe-statics -O0 -g3"
+					"fragment" : " -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -fno-rtti -fno-exceptions -fno-threadsafe-statics -O0 -g3"
 				}
 			],
 			"defines" : 
@@ -464,6 +476,10 @@
 				},
 				{
 					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/JY61P"
+				},
+				{
+					"backtrace" : 4,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/Key"
 				},
 				{
@@ -503,8 +519,16 @@
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/4_Task"
 				},
 				{
+					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/5_Test"
+				},
+				{
 					"backtrace" : 5,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/Core/Inc"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/App/Gimbal"
 				},
 				{
 					"backtrace" : 5,
@@ -622,14 +646,19 @@
 				53,
 				54,
 				55,
-				56
+				56,
+				57,
+				58,
+				59,
+				60,
+				61
 			]
 		},
 		{
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -x assembler-with-cpp -MMD -MP -g"
+					"fragment" : " -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -x assembler-with-cpp -MMD -MP -g"
 				}
 			],
 			"defines" : 
@@ -747,6 +776,10 @@
 				},
 				{
 					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/JY61P"
+				},
+				{
+					"backtrace" : 4,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/Key"
 				},
 				{
@@ -786,8 +819,16 @@
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/4_Task"
 				},
 				{
+					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/5_Test"
+				},
+				{
 					"backtrace" : 5,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/Core/Inc"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/App/Gimbal"
 				},
 				{
 					"backtrace" : 5,
@@ -890,7 +931,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -fno-rtti -fno-exceptions -fno-threadsafe-statics -O0 -g3",
+				"fragment" : "-mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -fstack-usage -fno-rtti -fno-exceptions -fno-threadsafe-statics -O0 -g3",
 				"role" : "flags"
 			},
 			{
@@ -973,7 +1014,12 @@
 				53,
 				54,
 				55,
-				56
+				56,
+				57,
+				58,
+				59,
+				60,
+				61
 			]
 		},
 		{
@@ -987,11 +1033,6 @@
 			"name" : "Object Libraries",
 			"sourceIndexes" : 
 			[
-				57,
-				58,
-				59,
-				60,
-				61,
 				62,
 				63,
 				64,
@@ -1022,7 +1063,12 @@
 				89,
 				90,
 				91,
-				92
+				92,
+				93,
+				94,
+				95,
+				96,
+				97
 			]
 		}
 	],
@@ -1307,6 +1353,12 @@
 		{
 			"backtrace" : 7,
 			"compileGroupIndex" : 1,
+			"path" : "User_File/2_Device/BSP/JY61P/bsp_jy61p.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
 			"path" : "User_File/2_Device/BSP/Key/bsp_key.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -1368,6 +1420,30 @@
 			"backtrace" : 7,
 			"compileGroupIndex" : 1,
 			"path" : "User_File/4_Task/tsk_config_and_callback.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
+			"path" : "User_File/5_Test/jy61p_test.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
+			"path" : "User_File/5_Test/motor_test.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
+			"path" : "App/Gimbal/gimbal_task.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
+			"path" : "App/Gimbal/gimbal_yaw_pitch_direct.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

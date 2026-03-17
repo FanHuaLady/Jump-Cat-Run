@@ -12,7 +12,6 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "bsp_bmi088_accel.h"
-
 /* Private macros ------------------------------------------------------------*/
 
 /* Private types -------------------------------------------------------------*/
@@ -34,7 +33,7 @@ const float GRAVITY_ACCELERATION = 9.7947f;
 void Class_BMI088_Accel::Init(const bool &__Heater_Enable)
 {
     // 绑定SPI
-    SPI_Manage_Object = &SPI2_Manage_Object;
+    SPI_Manage_Object = &SPI2_Manage_Object;                        //应当初始化完毕了
 
     // 绑定片选
     CS_GPIO_Port = BMI088_ACCEL__SPI_CS_GPIO_Port;
@@ -51,7 +50,7 @@ void Class_BMI088_Accel::Init(const bool &__Heater_Enable)
     PID_Temperature.Init(100.0f, 10.0f, 0.0f, 0.0f, 300.0f, 500.0f, 0.128f);
 
     // 启动PWM
-    if (Heater_Enable)
+    if (Heater_Enable)                                              // 可以选择是否使能加热电阻, 以节省功耗
     {
         HAL_TIM_PWM_Start(htim, TIM_Channel);
         __HAL_TIM_SET_COMPARE(htim, TIM_Channel, 0);
@@ -60,8 +59,8 @@ void Class_BMI088_Accel::Init(const bool &__Heater_Enable)
     uint8_t res;
 
     // 检测通信是否正常
-    Register.ACC_CHIP_ID_RO = 0x00;
-    while (Register.ACC_CHIP_ID_RO != 0x1e)
+    Register.ACC_CHIP_ID_RO = 0x00;                                 // 这是一个寄存器结构体
+    while (Register.ACC_CHIP_ID_RO != 0x1e)                         // 说明没有正确读取到芯片ID
     {
         Read_Single_Register(offsetof(Struct_BMI088_Accel_Register, ACC_CHIP_ID_RO));
         Namespace_SYS_Timestamp::Delay_Millisecond(100);
@@ -108,6 +107,7 @@ void Class_BMI088_Accel::SPI_RxCpltCallback()
 {
     uint8_t spi_init_address = SPI_Manage_Object->Tx_Buffer[0] & ~BMI088_GYRO_READ_MASK;
 
+    // 填充Register
     memcpy((uint8_t *) (&Register) + spi_init_address, &SPI_Manage_Object->Rx_Buffer[1 + BMI088_GYRO_SPI_RX_RESERVED], SPI_Manage_Object->Rx_Buffer_Length);
 
     // 处理数据
