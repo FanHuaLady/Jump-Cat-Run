@@ -31,7 +31,7 @@
 #include "usb_device.h"
 #include "gpio.h"
 
-#include "control_test.h"
+#include "usb_test.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -137,14 +137,14 @@ int main(void)
   MX_TIM4_Init();
 
   /* USER CODE BEGIN 2 */
-  Control_test();
+  USB_test();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    Control_test_Loop();
+    USB_test_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

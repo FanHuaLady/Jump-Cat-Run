@@ -1,9 +1,8 @@
-// #define CONTROL_TEST
+#define USB_TEST
 
-#ifdef CONTROL_TEST
+#ifdef USB_TEST
 
-#include "control_test.h"
-
+#include "usb_test.h"
 #include "dvc_vofa.h"
 #include "bsp_w25q64jv.h"
 #include "bsp_ws2812.h"
@@ -16,16 +15,9 @@
 #include "sys_timestamp.h"
 #include "dvc_serialplot.h"
 #include "gimbal_yaw_pitch_direct.h"
-
-// 新增：遥控器 BSP 头文件
-#include "bsp_control.h"
+#include "jy61p_test.h"
+#include "bsp_jy61p.h"
 #include <stdio.h>
-
-// 新增：声明外部全局对象（在 bsp_control.cpp 中定义）
-extern Class_Control Control;
-
-// 新增：声明外部串口句柄（用于打印）
-extern UART_HandleTypeDef huart7;
 
 int32_t red = 0;
 int32_t green = 12;
@@ -102,46 +94,31 @@ void Task1ms_Callback()
         BSP_WS2812.Set_RGB(red, green, blue);
         BSP_WS2812.TIM_10ms_Write_PeriodElapsedCallback();
     }
-
-    Control.TIM_1ms_Process_PeriodElapsedCallback();
 }
 
-void Control_test()
+void USB_RxCallback(uint8_t *Buffer, uint16_t Length)
+{
+    HAL_UART_Transmit(&huart7, Buffer, Length, HAL_MAX_DELAY);
+}
+
+void USB_test()
 {
     SYS_Timestamp.Init(&htim5);                                     // 初始化时间戳
     SPI_Init(&hspi6, nullptr);                                      // WS2812的SPI
     BSP_WS2812.Init(0, 0, 0);                                       // 初始化彩灯
 
-    Control.Init(&huart5, 100);
+    USB_Init(USB_RxCallback);                                       // 初始化USB虚拟串口
 
+    HAL_TIM_Base_Start_IT(&htim4);
     HAL_TIM_Base_Start_IT(&htim7);                                  // 开启定时器中断
     HAL_TIM_Base_Start_IT(&htim5);
+    HAL_TIM_Base_Start_IT(&htim8);
 
     init_finished = true;                                           // 标记初始化完成
 }
 
-void Control_test_Loop()
+void USB_test_Loop()
 {
-    static uint32_t last_print = 0;
-    uint32_t now = HAL_GetTick();
-
-    if (!Control.IsOffline() && (now - last_print > 100)) 
-    {
-        last_print = now;
-
-        // 获取原始数据
-        const auto &raw = Control.GetData();
-
-        // 打印开关值、四个摇杆通道值、以及两个旋钮通道值
-        char debug[192];  // 增大缓冲区
-        int dlen = snprintf(debug, sizeof(debug), 
-            "s=[%d,%d,%d,%d] ch=[%d,%d,%d,%d] vr=[%d,%d]\r\n",
-            raw.rc.s[0], raw.rc.s[1], raw.rc.s[2], raw.rc.s[3],
-            raw.rc.ch[0], raw.rc.ch[1], raw.rc.ch[2], raw.rc.ch[3],
-            raw.rc.ch[4], raw.rc.ch[5]);  // 旋钮 VrA 和 VrB
-        HAL_UART_Transmit(&huart7, (uint8_t*)debug, dlen, HAL_MAX_DELAY);
-    }
-
     Namespace_SYS_Timestamp::Delay_Millisecond(1);
 }
 
