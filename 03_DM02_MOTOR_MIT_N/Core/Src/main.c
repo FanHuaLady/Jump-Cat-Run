@@ -31,7 +31,7 @@
 #include "usb_device.h"
 #include "gpio.h"
 
-#include "JY61P_test.h"
+#include "control_test.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -137,14 +137,14 @@ int main(void)
   MX_TIM4_Init();
 
   /* USER CODE BEGIN 2 */
-  JY61P_test();
+  Control_test();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    JY61P_test_Loop();
+    Control_test_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

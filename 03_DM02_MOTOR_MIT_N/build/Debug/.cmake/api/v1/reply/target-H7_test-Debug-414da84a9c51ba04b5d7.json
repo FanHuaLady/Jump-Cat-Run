@@ -191,6 +191,10 @@
 				},
 				{
 					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/Control"
+				},
+				{
+					"backtrace" : 4,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/JY61P"
 				},
 				{
@@ -476,6 +480,10 @@
 				},
 				{
 					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/Control"
+				},
+				{
+					"backtrace" : 4,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/JY61P"
 				},
 				{
@@ -651,7 +659,9 @@
 				58,
 				59,
 				60,
-				61
+				61,
+				62,
+				63
 			]
 		},
 		{
@@ -773,6 +783,10 @@
 				{
 					"backtrace" : 4,
 					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/Buzzer"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/User_File/2_Device/BSP/Control"
 				},
 				{
 					"backtrace" : 4,
@@ -1019,7 +1033,9 @@
 				58,
 				59,
 				60,
-				61
+				61,
+				62,
+				63
 			]
 		},
 		{
@@ -1033,8 +1049,6 @@
 			"name" : "Object Libraries",
 			"sourceIndexes" : 
 			[
-				62,
-				63,
 				64,
 				65,
 				66,
@@ -1068,7 +1082,9 @@
 				94,
 				95,
 				96,
-				97
+				97,
+				98,
+				99
 			]
 		}
 	],
@@ -1353,6 +1369,12 @@
 		{
 			"backtrace" : 7,
 			"compileGroupIndex" : 1,
+			"path" : "User_File/2_Device/BSP/Control/bsp_control.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
 			"path" : "User_File/2_Device/BSP/JY61P/bsp_jy61p.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -1420,6 +1442,12 @@
 			"backtrace" : 7,
 			"compileGroupIndex" : 1,
 			"path" : "User_File/4_Task/tsk_config_and_callback.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
+			"path" : "User_File/5_Test/control_test.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
