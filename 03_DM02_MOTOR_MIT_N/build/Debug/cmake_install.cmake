@@ -1,4 +1,4 @@
-# Install script for directory: /Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT
+# Install script for directory: /Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT_N
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,13 +39,13 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/build/Debug/cmake/stm32cubemx/cmake_install.cmake")
+  include("/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT_N/build/Debug/cmake/stm32cubemx/cmake_install.cmake")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/build/Debug/install_local_manifest.txt"
+  file(WRITE "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT_N/build/Debug/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -61,6 +61,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT/build/Debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/Users/xylm/STM32_Team/A_code/03_DM02_MOTOR_MIT_N/build/Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
