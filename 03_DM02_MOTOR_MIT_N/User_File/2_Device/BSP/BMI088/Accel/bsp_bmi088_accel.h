@@ -47,7 +47,7 @@ public:
     // 温控PID
     Class_PID PID_Temperature;
 
-    void Init(const bool &__Heater_Enable = false);
+    void Init(const bool &__Heater_Enable = false);                             // 初始化
 
     inline float Get_Now_Temperature() const;
 
@@ -115,7 +115,7 @@ protected:
     // 触发预热基础温度
     float HEATER_PREHEAT_BASE_TEMPERATURE = 45.0f;
     // 加热电阻目标温度
-    float HEATER_TARGET_TEMPERATURE = 50.0f;
+    float HEATER_TARGET_TEMPERATURE = 50.0f;                        // 50度是目标温度
 
     // 内部变量
 

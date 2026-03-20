@@ -33,7 +33,7 @@ const float GRAVITY_ACCELERATION = 9.7947f;
 void Class_BMI088_Accel::Init(const bool &__Heater_Enable)
 {
     // 绑定SPI
-    SPI_Manage_Object = &SPI2_Manage_Object;                        //应当初始化完毕了
+    SPI_Manage_Object = &SPI2_Manage_Object;
 
     // 绑定片选
     CS_GPIO_Port = BMI088_ACCEL__SPI_CS_GPIO_Port;
@@ -44,10 +44,17 @@ void Class_BMI088_Accel::Init(const bool &__Heater_Enable)
     htim = &htim3;
     TIM_Channel = TIM_CHANNEL_4;
 
-    Heater_Enable = __Heater_Enable;
+    Heater_Enable = __Heater_Enable;                                // 打开加热功能
 
     // 初始化PID
-    PID_Temperature.Init(100.0f, 10.0f, 0.0f, 0.0f, 300.0f, 500.0f, 0.128f);
+    // 设置__K_P为100.0f
+    // 设置__K_I为10.0f
+    // 设置__K_D为0.0f
+    // 设置__K_F为0.0f
+    // 设置__I_Out_Max积分限幅
+    // 设置__Out_Max输出限幅
+    // 设置__D_T 时间片长度
+    PID_Temperature.Init(1.0f, 0.0f, 0.0f, 0.0f, 300.0f, 500.0f, 0.128f);
 
     // 启动PWM
     if (Heater_Enable)                                              // 可以选择是否使能加热电阻, 以节省功耗
@@ -166,41 +173,44 @@ void Class_BMI088_Accel::SPI_Request_Temperature()
  */
 void Class_BMI088_Accel::TIM_128ms_Heater_PID_PeriodElapsedCallback()
 {
+    // 如果加热功能被启动
+    // 此功能的启用位置是Init
     if (Heater_Enable)
     {
         // 防止NaN烧板
-        if (Basic_Math_Is_Invalid_Float(Now_Temperature))
+        if (Basic_Math_Is_Invalid_Float(Now_Temperature))           // 查看当前温度是否为有效浮点数
         {
-            __HAL_TIM_SET_COMPARE(htim, TIM_Channel, 0);
+            __HAL_TIM_SET_COMPARE(htim, TIM_Channel, 0);            // 关闭加热功能
             return;
         }
 
         // 是否开启预热
-        if (Now_Temperature < HEATER_PREHEAT_BASE_TEMPERATURE)
+        if (Now_Temperature < HEATER_PREHEAT_BASE_TEMPERATURE)      // 温度小于预热温度
         {
             // 需要预热
-            Heater_Preheat_Finished_Flag = false;
+            Heater_Preheat_Finished_Flag = false;                   // 加热器预热完成标志 为 假
         }
         else
         {
             // 不需要预热
-            Heater_Preheat_Finished_Flag = true;
+            Heater_Preheat_Finished_Flag = true;                    // 加热器预热完成标志 为 真
         }
 
         float tmp;
-        if (!Heater_Preheat_Finished_Flag)
+        if (!Heater_Preheat_Finished_Flag)                          // 如果没有完成预热
         {
-            tmp = HEATER_PREHEAT_POWER;
+            tmp = HEATER_PREHEAT_POWER;                             // 加热电阻预热功率为HEATER_PREHEAT_POWER
         }
         else
         {
-            PID_Temperature.Set_Now(Now_Temperature);
-            PID_Temperature.Set_Target(HEATER_TARGET_TEMPERATURE);
-            PID_Temperature.TIM_Calculate_PeriodElapsedCallback();
-            tmp = PID_Temperature.Get_Out();
+            PID_Temperature.Set_Now(Now_Temperature);               // 设定PID的当前值为当前值
+            PID_Temperature.Set_Target(HEATER_TARGET_TEMPERATURE);  // 设定PID的目标值为HEATER_TARGET_TEMPERATURE
+            PID_Temperature.TIM_Calculate_PeriodElapsedCallback();  // PID控制
+            tmp = PID_Temperature.Get_Out();                        // 获取PID的输出
         }
+
         float output = tmp / (BSP_Power.Get_Power_Voltage() * BSP_Power.Get_Power_Voltage()) * HEATER_NOMINAL_VOLTAGE * HEATER_NOMINAL_VOLTAGE;
-        Basic_Math_Constrain(&output, 0.0f, 10000.0f);
+        Basic_Math_Constrain(&output, 0.0f, 10000.0f);              // 
         __HAL_TIM_SET_COMPARE(htim, TIM_Channel, (uint32_t)(output));
     }
     else

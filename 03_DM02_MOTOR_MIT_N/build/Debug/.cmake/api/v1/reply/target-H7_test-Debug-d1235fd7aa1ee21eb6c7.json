@@ -662,7 +662,8 @@
 				61,
 				62,
 				63,
-				64
+				64,
+				65
 			]
 		},
 		{
@@ -1037,7 +1038,8 @@
 				61,
 				62,
 				63,
-				64
+				64,
+				65
 			]
 		},
 		{
@@ -1051,7 +1053,6 @@
 			"name" : "Object Libraries",
 			"sourceIndexes" : 
 			[
-				65,
 				66,
 				67,
 				68,
@@ -1086,7 +1087,8 @@
 				97,
 				98,
 				99,
-				100
+				100,
+				101
 			]
 		}
 	],
@@ -1444,6 +1446,12 @@
 			"backtrace" : 7,
 			"compileGroupIndex" : 1,
 			"path" : "User_File/4_Task/tsk_config_and_callback.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
+			"path" : "User_File/5_Test/bmi088_test.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
