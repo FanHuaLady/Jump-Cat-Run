@@ -34,7 +34,7 @@ Class_Power BSP_Power;
  */
 void Class_Power::Init(const bool &__DC24_0_Status, const bool &__DC24_1_Status, const bool &__DC5_Status)
 {
-    ADC_Manage_Object = &ADC1_Manage_Object;
+    ADC_Manage_Object = &ADC1_Manage_Object;                                    // 会开启ADC
 
     HAL_GPIO_WritePin(DC24_0__OUTPUT_GPIO_Port, DC24_0__OUTPUT_Pin, __DC24_0_Status ? GPIO_PIN_SET : GPIO_PIN_RESET);
     HAL_GPIO_WritePin(DC24_1__OUTPUT_GPIO_Port, DC24_1__OUTPUT_Pin, __DC24_1_Status ? GPIO_PIN_SET : GPIO_PIN_RESET);
