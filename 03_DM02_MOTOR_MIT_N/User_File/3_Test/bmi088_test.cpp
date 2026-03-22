@@ -2,7 +2,6 @@
 
 #ifdef BMI088_TEST
 
-#include "usb_test.h"
 #include "dvc_vofa.h"
 #include "bsp_w25q64jv.h"
 #include "bsp_ws2812.h"
