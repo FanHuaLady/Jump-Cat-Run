@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "adc.h"
 #include "cordic.h"
 #include "dma.h"
@@ -31,7 +32,15 @@
 #include "usb_device.h"
 #include "gpio.h"
 
-#include "usb_test.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include <stdbool.h>
+
+void SysTimestamp_Init(TIM_HandleTypeDef *htim);
+void SysTimestamp_TIM_3600s_PeriodElapsedCallback(void);
+
+bool init_finished = false;
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -62,6 +71,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -110,7 +120,6 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_MDMA_Init();
-  MX_USB_DEVICE_Init();
   MX_ADC1_Init();
   MX_FDCAN1_Init();
   MX_FDCAN2_Init();
@@ -135,21 +144,55 @@ int main(void)
   MX_CORDIC_Init();
   MX_OCTOSPI2_Init();
   MX_TIM4_Init();
-
   /* USER CODE BEGIN 2 */
-  Bmi088_test();
   /* USER CODE END 2 */
 
+  /* Call init function for freertos objects (in cmsis_os2.c) */
+  // MX_FREERTOS_Init();
+  
+  
+  WS2812_Task_Create();
+  // Control_Task_Create();
+  // BalanceHomeTest_Task_Create();
+  // BalanceLegDebug_Task_Create();
+  BalanceApp_Task_Create();
+  
+  SysTimestamp_Init(&htim5);                                      // 初始化时间戳
+  HAL_TIM_Base_Start_IT(&htim5);
+    
+  init_finished = true;
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
+  
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    Bmi088_test_Loop();
+    // Task_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+}
+
+void Task3600s_Callback()
+{
+    SysTimestamp_TIM_3600s_PeriodElapsedCallback();
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (!init_finished)
+    {
+        return;
+    }
+    else if (htim->Instance == TIM5)
+    {
+        Task3600s_Callback();
+    }
 }
 
 /**

@@ -1,4 +1,4 @@
-# Install script for directory: E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/cmake/stm32cubemx
+# Install script for directory: E:/02_github/19_Jump-Cat-Run/03_DM02_MOTOR_MIT_N/cmake/stm32cubemx
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

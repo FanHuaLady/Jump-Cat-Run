@@ -1,4 +1,4 @@
-# Install script for directory: E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N
+# Install script for directory: E:/02_github/19_Jump-Cat-Run/03_DM02_MOTOR_MIT_N
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug/cmake/stm32cubemx/cmake_install.cmake")
+  include("E:/02_github/19_Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug/cmake/stm32cubemx/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "E:/02_github/Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "E:/02_github/19_Jump-Cat-Run/03_DM02_MOTOR_MIT_N/build/Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

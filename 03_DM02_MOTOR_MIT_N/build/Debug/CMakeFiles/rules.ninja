@@ -81,11 +81,30 @@ rule C_COMPILER__USB_Device_Library_unscanned_Debug
 
 
 #############################################
+# Rule for compiling C files.
+
+rule C_COMPILER__FreeRTOS_unscanned_Debug
+  depfile = $DEP_FILE
+  deps = gcc
+  command = ${LAUNCHER}${CODE_CHECK}D:\MySTM32CubeCLT\STM32CubeCLT_1.18.0\GNU-tools-for-STM32\bin\arm-none-eabi-gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building C object $out
+
+
+#############################################
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = D:\MySTM32CubeCLT\STM32CubeCLT_1.18.0\CMake\bin\cmake.exe --regenerate-during-build -SE:\02_github\Jump-Cat-Run\03_DM02_MOTOR_MIT_N -BE:\02_github\Jump-Cat-Run\03_DM02_MOTOR_MIT_N\build\Debug
+  command = D:\MySTM32CubeCLT\STM32CubeCLT_1.18.0\CMake\bin\cmake.exe --regenerate-during-build -SE:\02_github\19_Jump-Cat-Run\03_DM02_MOTOR_MIT_N -BE:\02_github\19_Jump-Cat-Run\03_DM02_MOTOR_MIT_N\build\Debug
   description = Re-running CMake...
+  generator = 1
+
+
+#############################################
+# Rule for re-checking globbed directories.
+
+rule VERIFY_GLOBS
+  command = D:\MySTM32CubeCLT\STM32CubeCLT_1.18.0\CMake\bin\cmake.exe -P E:\02_github\19_Jump-Cat-Run\03_DM02_MOTOR_MIT_N\build\Debug\CMakeFiles\VerifyGlobs.cmake
+  description = Re-checking globbed directories...
   generator = 1
 
 

@@ -22,6 +22,17 @@
 #include "tim.h"
 #include "stm32h7xx_hal.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void SysTimestamp_Init(TIM_HandleTypeDef *htim);
+void SysTimestamp_TIM_3600s_PeriodElapsedCallback(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 /* Exported macros -----------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/

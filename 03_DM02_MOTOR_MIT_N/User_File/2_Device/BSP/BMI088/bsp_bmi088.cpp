@@ -33,7 +33,7 @@ void Class_BMI088::Init()
 {
     SPI_Manage_Object = &SPI2_Manage_Object;
 
-    BMI088_Accel.Init(true);
+    BMI088_Accel.Init(false);
     BMI088_Gyro.Init();
 
     // 欧拉角需要辅助初始化EKF, 第一次初始化默认Yaw是0
@@ -105,7 +105,7 @@ void Class_BMI088::EXTI_Flag_Callback(uint16_t GPIO_Pin)
 void Class_BMI088::TIM_128ms_Calculate_PeriodElapsedCallback()
 {
     Temperature_Ready_Flag = true;
-    BMI088_Accel.TIM_128ms_Heater_PID_PeriodElapsedCallback();              // 温度控制
+    BMI088_Accel.TIM_128ms_Heater_PID_PeriodElapsedCallback();
 }
 
 /**
@@ -114,10 +114,10 @@ void Class_BMI088::TIM_128ms_Calculate_PeriodElapsedCallback()
  */
 void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
 {
-    EKF_Now_Timestamp = SYS_Timestamp.Get_Now_Microsecond();                // 获取当前时间, 单位微秒
+    EKF_Now_Timestamp = SYS_Timestamp.Get_Now_Microsecond();
 
-    Vector_Original_Accel = BMI088_Accel.Get_Raw_Accel();                   // 获取当前加速度原始数据
-    Vector_Original_Gyro = BMI088_Gyro.Get_Raw_Gyro();                      // 获取当当前陀螺仪原始数据
+    Vector_Original_Accel = BMI088_Accel.Get_Raw_Accel();
+    Vector_Original_Gyro = BMI088_Gyro.Get_Raw_Gyro();
 
     // 角速度合法则保存, 不合法则使用上次的数据
     if (!BMI088_Gyro.Get_Valid_Flag())
@@ -219,8 +219,8 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         Quarternion = EKF_Quaternion.Vector_X;
 
         // 输出姿态相关变量
-        Vector_Euler_Angle = Quarternion.Get_Euler_Angle();         // 获取四元数对应的欧拉角, Z-Y-X顺序
-        Matrix_Rotation = Quarternion.Get_Rotation_Matrix();        // 获取四元数对应的旋转矩阵
+        Vector_Euler_Angle = Quarternion.Get_Euler_Angle();
+        Matrix_Rotation = Quarternion.Get_Rotation_Matrix();
         Vector_Axis_Angle = Quarternion.Get_Axis_Angle();
 
         // 机体坐标系下的重力加速度
@@ -252,7 +252,7 @@ void Class_BMI088::TIM_10us_Calculate_PeriodElapsedCallback()
     {
         // 数据准备好, 读取加速度计
         Accel_Transfering_Flag = true;
-        Accel_Transfering_Timestamp = SYS_Timestamp.Get_Now_Microsecond();          // 获取当前时间, 单位微秒
+        Accel_Transfering_Timestamp = SYS_Timestamp.Get_Now_Microsecond();
         BMI088_Accel.SPI_Request_Accel();
         Accel_Ready_Flag = false;
         return;
@@ -262,7 +262,7 @@ void Class_BMI088::TIM_10us_Calculate_PeriodElapsedCallback()
     {
         // 数据准备好, 读取陀螺仪
         Gyro_Transfering_Flag = true;
-        Gyro_Transfering_Timestamp = SYS_Timestamp.Get_Now_Microsecond();           // 获取当前时间, 单位微秒
+        Gyro_Transfering_Timestamp = SYS_Timestamp.Get_Now_Microsecond();
         BMI088_Gyro.SPI_Request_Gyro();
         Gyro_Ready_Flag = false;
         return;

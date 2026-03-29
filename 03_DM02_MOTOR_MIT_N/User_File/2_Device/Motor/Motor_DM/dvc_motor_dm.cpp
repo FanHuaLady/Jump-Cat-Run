@@ -385,7 +385,7 @@ void Class_Motor_DM_Normal::Data_Process()
 {
     // 数据处理过程
     uint16_t tmp_encoder, tmp_omega, tmp_torque;
-    Struct_Motor_DM_CAN_Rx_Data_Normal *tmp_buffer = (Struct_Motor_DM_CAN_Rx_Data_Normal *) CAN_Manage_Object->Rx_Buffer;
+    Struct_Motor_DM_CAN_Rx_Data_Normal *tmp_buffer = (Struct_Motor_DM_CAN_Rx_Data_Normal *)CAN_Manage_Object->Rx_Buffer;
 
     // 电机ID不匹配, 则不进行处理
     if (tmp_buffer->CAN_ID != (CAN_Tx_ID & 0x0f))
@@ -394,7 +394,7 @@ void Class_Motor_DM_Normal::Data_Process()
     }
 
     // 处理大小端
-    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Angle_Reverse, &tmp_encoder);
+    Basic_Math_Endian_Reverse_16((void *)&tmp_buffer->Angle_Reverse, &tmp_encoder);
     tmp_omega = (tmp_buffer->Omega_11_4 << 4) | (tmp_buffer->Omega_3_0_Torque_11_8 >> 4);
     tmp_torque = ((tmp_buffer->Omega_3_0_Torque_11_8 & 0x0f) << 8) | (tmp_buffer->Torque_7_0);
 
@@ -419,7 +419,7 @@ void Class_Motor_DM_Normal::Output()
     {
     case (Motor_DM_Control_Method_NORMAL_MIT):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *) Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *)Tx_Data;
 
         uint16_t tmp_angle, tmp_omega, tmp_torque, tmp_k_p, tmp_k_d;
 
@@ -443,7 +443,7 @@ void Class_Motor_DM_Normal::Output()
     }
     case (Motor_DM_Control_Method_NORMAL_ANGLE_OMEGA):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *) Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *)Tx_Data;
 
         tmp_buffer->Control_Angle = Control_Angle;
         tmp_buffer->Control_Omega = Control_Omega;
@@ -454,7 +454,7 @@ void Class_Motor_DM_Normal::Output()
     }
     case (Motor_DM_Control_Method_NORMAL_OMEGA):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *) Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *)Tx_Data;
 
         tmp_buffer->Control_Omega = Control_Omega;
 
@@ -464,7 +464,7 @@ void Class_Motor_DM_Normal::Output()
     }
     case (Motor_DM_Control_Method_NORMAL_EMIT):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *) Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *)Tx_Data;
 
         tmp_buffer->Control_Angle = Control_Angle;
         tmp_buffer->Control_Omega = (uint16_t)(Control_Omega * 100.0f);
@@ -479,7 +479,7 @@ void Class_Motor_DM_Normal::Output()
 
 /**
  * @brief 电机初始化
- * 
+ *
  * @param hcan 绑定的CAN总线
  * @param __CAN_Rx_ID 绑定的CAN ID
  * @param __Motor_DM_Control_Method 电机控制方式, 默认角度
@@ -570,12 +570,12 @@ void Class_Motor_DM_1_To_4::Data_Process()
     int16_t delta_encoder;
     uint16_t tmp_encoder;
     int16_t tmp_omega, tmp_current;
-    Struct_Motor_DM_CAN_Rx_Data_1_To_4 *tmp_buffer = (Struct_Motor_DM_CAN_Rx_Data_1_To_4 *) CAN_Manage_Object->Rx_Buffer;
+    Struct_Motor_DM_CAN_Rx_Data_1_To_4 *tmp_buffer = (Struct_Motor_DM_CAN_Rx_Data_1_To_4 *)CAN_Manage_Object->Rx_Buffer;
 
     // 处理大小端
-    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
-    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
-    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
+    Basic_Math_Endian_Reverse_16((void *)&tmp_buffer->Encoder_Reverse, (void *)&tmp_encoder);
+    Basic_Math_Endian_Reverse_16((void *)&tmp_buffer->Omega_Reverse, (void *)&tmp_omega);
+    Basic_Math_Endian_Reverse_16((void *)&tmp_buffer->Current_Reverse, (void *)&tmp_current);
 
     // 计算圈数与总编码器值
     delta_encoder = tmp_encoder - Rx_Data.Pre_Encoder;
@@ -592,7 +592,7 @@ void Class_Motor_DM_1_To_4::Data_Process()
     Rx_Data.Total_Encoder = Rx_Data.Total_Round * ENCODER_NUM_PER_ROUND + tmp_encoder + Encoder_Offset;
 
     // 计算电机本身信息
-    Rx_Data.Now_Angle = (float) Rx_Data.Total_Encoder / (float) ENCODER_NUM_PER_ROUND * 2.0f * PI;
+    Rx_Data.Now_Angle = (float)Rx_Data.Total_Encoder / (float)ENCODER_NUM_PER_ROUND * 2.0f * PI;
     Rx_Data.Now_Omega = tmp_omega / 100.0f * BASIC_MATH_RPM_TO_RADPS;
     Rx_Data.Now_Torque = tmp_current / 1000.0f * CURRENT_TO_TORQUE * Gearbox_Rate;
     Rx_Data.Now_MOS_Temperature = tmp_buffer->MOS_Temperature + BASIC_MATH_CELSIUS_TO_KELVIN;
@@ -649,7 +649,7 @@ void Class_Motor_DM_1_To_4::PID_Calculate()
  */
 void Class_Motor_DM_1_To_4::Output()
 {
-    *(int16_t *) Tx_Data = (int16_t)(Out);
+    *(int16_t *)Tx_Data = (int16_t)(Out);
 }
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/
