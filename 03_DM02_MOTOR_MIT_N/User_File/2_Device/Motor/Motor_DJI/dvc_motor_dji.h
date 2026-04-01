@@ -59,9 +59,10 @@ enum Enum_Motor_DJI_ID
  */
 enum Enum_Motor_DJI_Control_Method
 {
-    Motor_DJI_Control_Method_TORQUE = 0,
-    Motor_DJI_Control_Method_OMEGA,
+    Motor_DJI_Control_Method_TORQUE = 0,                // 力矩控制模型，不会参与PID_Calculate
+    Motor_DJI_Control_Method_OMEGA,                     // 速度控制模型, PID_Omega参与PID_Calculate
     Motor_DJI_Control_Method_ANGLE,
+    
 };
 
 /**

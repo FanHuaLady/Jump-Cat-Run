@@ -155,7 +155,8 @@ int main(void)
   // Control_Task_Create();
   // BalanceHomeTest_Task_Create();
   // BalanceLegDebug_Task_Create();
-  BalanceApp_Task_Create();
+  // BalanceApp_Task_Create();
+  Balance_Test_Task_Create();
   
   SysTimestamp_Init(&htim5);                                      // 初始化时间戳
   HAL_TIM_Base_Start_IT(&htim5);
