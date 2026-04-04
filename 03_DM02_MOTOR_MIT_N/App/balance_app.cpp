@@ -15,6 +15,7 @@
 
 #include "fdcan.h"
 #include "dvc_motor_dm.h"
+#include "dvc_motor_dji.h"
 #include "drv_can.h"
 #include "bsp_jy61p.h"
 
@@ -25,14 +26,16 @@ BalanceRobot g_balance_robot;
 
 // =====================================================
 // 电机对象
+// 关节：达妙（CAN1）
+// 轮子：DJI 3508 + C620（CAN2）
 // =====================================================
 static Class_Motor_DM_Normal g_motor_joint_0;
 static Class_Motor_DM_Normal g_motor_joint_1;
 static Class_Motor_DM_Normal g_motor_joint_2;
 static Class_Motor_DM_Normal g_motor_joint_3;
 
-static Class_Motor_DM_Normal g_motor_wheel_0;
-static Class_Motor_DM_Normal g_motor_wheel_1;
+static Class_Motor_DJI_C620 g_motor_wheel_0;
+static Class_Motor_DJI_C620 g_motor_wheel_1;
 
 // =====================================================
 // 任务句柄
@@ -50,16 +53,18 @@ static bool g_balance_app_enabled = false;
 
 // =====================================================
 // 模式定义
-// 0: 回参考姿态模式
-// 1: 正常控制模式
+// 0: 轮子测试模式
+// 1: 回参考姿态模式
+// 2: 正常控制模式
 // =====================================================
 enum
 {
-    BAL_APP_MODE_RETURN_REF = 0,
-    BAL_APP_MODE_NORMAL = 1,
+    BAL_APP_MODE_WHEEL_TEST = 0,
+    BAL_APP_MODE_RETURN_REF = 1,
+    BAL_APP_MODE_NORMAL = 2,
 };
 
-static uint8_t g_balance_mode = BAL_APP_MODE_RETURN_REF;
+static uint8_t g_balance_mode = BAL_APP_MODE_WHEEL_TEST;
 
 // =====================================================
 // 参考姿态模块状态
@@ -71,8 +76,26 @@ static BalanceRefPoseState g_balance_ref_pose;
 // =====================================================
 namespace
 {
-    // 模式切换缓冲时间
     static constexpr uint32_t kSwitchDelayMs = 1500U;
+
+    // =========================
+    // 轮子 DJI 参数
+    // =========================
+    static constexpr Enum_Motor_DJI_ID kWheelLeftId  = Motor_DJI_ID_0x201;
+    static constexpr Enum_Motor_DJI_ID kWheelRightId = Motor_DJI_ID_0x202;
+
+    // 3508 常见减速比 19:1
+    static constexpr float kWheelGearRatio = 19.0f;
+
+    // =========================
+    // 轮子测试力矩
+    // 先只开左轮
+    // =========================
+    static constexpr float kWheelTestTorqueLeft  = 0.4f;
+    static constexpr float kWheelTestTorqueRight = 0.0f;
+
+    static uint32_t g_wheel_test_tick = 0;
+    static constexpr uint32_t kWheelTestDelayTick = 1000;   // 2ms下约2秒
 
     static inline float ClampFloat(float x, float min_v, float max_v)
     {
@@ -122,16 +145,20 @@ static void BalanceApp_StartReturnToRef(void);
 static void BalanceApp_SwitchToNormalMode(void);
 static void BalanceApp_SwitchToReturnRefMode(void);
 
+static void BalanceApp_OutputWheelTest(void);
+
 static void vBalanceControlTask(void *pvParameters);
 static void vBalanceMotorSendTask(void *pvParameters);
 static void vBalanceAliveTask(void *pvParameters);
 static void vBalancePrintTask(void *pvParameters);
 
 // =====================================================
-// CAN 回调
+// CAN1 回调：关节达妙
 // =====================================================
 void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
 {
+    (void)Buffer;
+
     switch (Header.Identifier)
     {
     case (0x05):
@@ -152,6 +179,26 @@ void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
 }
 
 // =====================================================
+// CAN2 回调：轮子 DJI
+// =====================================================
+void CAN2_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
+{
+    (void)Buffer;
+
+    switch (Header.Identifier)
+    {
+    case (0x201):
+        g_motor_wheel_0.CAN_RxCpltCallback();
+        break;
+    case (0x202):
+        g_motor_wheel_1.CAN_RxCpltCallback();
+        break;
+    default:
+        break;
+    }
+}
+
+// =====================================================
 // 初始化
 // =====================================================
 static void BalanceApp_InitRobot(void)
@@ -160,6 +207,8 @@ static void BalanceApp_InitRobot(void)
     BalanceObserver_Init(&g_balance_robot);
     BalanceController_Init(&g_balance_robot);
     BalanceRefPose_Init(&g_balance_ref_pose);
+
+    g_wheel_test_tick = 0;
 }
 
 static void BalanceApp_InitImu(void)
@@ -169,8 +218,15 @@ static void BalanceApp_InitImu(void)
 
 static void BalanceApp_InitMotors(void)
 {
+    // CAN1 给关节
     CAN_Init(&hfdcan1, CAN1_Callback);
 
+    // CAN2 给轮子
+    CAN_Init(&hfdcan2, CAN2_Callback);
+
+    // =========================
+    // 关节：达妙（CAN1）
+    // =========================
     g_motor_joint_0.Init(&hfdcan1, 0x05, 0x05,
                          Motor_DM_Control_Method_NORMAL_MIT,
                          12.5f, 25.0f, 10.0f, 10.261194f);
@@ -184,12 +240,34 @@ static void BalanceApp_InitMotors(void)
                          Motor_DM_Control_Method_NORMAL_MIT,
                          12.5f, 25.0f, 10.0f, 10.261194f);
 
+    // =========================
+    // 轮子：DJI 3508 + C620（CAN2）
+    // =========================
+    g_motor_wheel_0.Init(&hfdcan2,
+                         kWheelLeftId,
+                         Motor_DJI_Control_Method_TORQUE,
+                         kWheelGearRatio);
+
+    g_motor_wheel_1.Init(&hfdcan2,
+                         kWheelRightId,
+                         Motor_DJI_Control_Method_TORQUE,
+                         kWheelGearRatio);
+
     BalanceMotorIf_Init();
 
+    // =========================
+    // 注册关节
+    // =========================
     BalanceMotorIf_RegisterJoint(BAL_JOINT_L_0, &g_motor_joint_1);
     BalanceMotorIf_RegisterJoint(BAL_JOINT_L_1, &g_motor_joint_0);
     BalanceMotorIf_RegisterJoint(BAL_JOINT_R_0, &g_motor_joint_2);
     BalanceMotorIf_RegisterJoint(BAL_JOINT_R_1, &g_motor_joint_3);
+
+    // =========================
+    // 注册轮子
+    // =========================
+    BalanceMotorIf_RegisterWheel(BAL_WHEEL_L, &g_motor_wheel_0);
+    BalanceMotorIf_RegisterWheel(BAL_WHEEL_R, &g_motor_wheel_1);
 }
 
 void BalanceApp_Init(void)
@@ -238,6 +316,53 @@ static void BalanceApp_SwitchToReturnRefMode(void)
 }
 
 // =====================================================
+// 轮子测试输出
+// =====================================================
+static void BalanceApp_OutputWheelTest(void)
+{
+    for (int i = 0; i < BALANCE_LEG_NUM; ++i)
+    {
+        ClearLegCmd(&g_balance_robot.cmd[i]);
+    }
+
+    for (int i = 0; i < BALANCE_JOINT_NUM; ++i)
+    {
+        ClearMotorCmd(&g_balance_robot.joint_motor_cmd[i]);
+    }
+
+    for (int i = 0; i < BALANCE_WHEEL_NUM; ++i)
+    {
+        ClearMotorCmd(&g_balance_robot.wheel_motor_cmd[i]);
+    }
+
+    if (g_wheel_test_tick < kWheelTestDelayTick)
+    {
+        g_wheel_test_tick++;
+        return;
+    }
+
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_L].pos = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_L].vel = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_L].tor =
+        ClampFloat(kWheelTestTorqueLeft,
+                   -BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT,
+                    BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT);
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_L].kp = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_L].kd = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_L].enable = true;
+
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].pos = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].vel = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].tor =
+        ClampFloat(kWheelTestTorqueRight,
+                   -BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT,
+                    BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT);
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].kp = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].kd = 0.0f;
+    g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].enable = true;
+}
+
+// =====================================================
 // 使能 / 失能
 // =====================================================
 void BalanceApp_Enable(void)
@@ -253,8 +378,8 @@ void BalanceApp_Enable(void)
 
     BalanceMotorIf_SendEnterAll();
 
-    // 默认使能后先回参考姿态
-    BalanceApp_StartReturnToRef();
+    g_balance_mode = BAL_APP_MODE_WHEEL_TEST;
+    g_wheel_test_tick = 0;
 }
 
 void BalanceApp_Disable(void)
@@ -287,13 +412,17 @@ static void vBalanceControlTask(void *pvParameters)
 
     for (;;)
     {
-        BalanceMotorIf_UpdateFeedback(&g_balance_robot);   // 获取电机数据
+        BalanceMotorIf_UpdateFeedback(&g_balance_robot);
         BalanceImuIf_Update(&g_balance_robot.imu);
         BalanceObserver_UpdateAll(&g_balance_robot);
 
         if (g_balance_robot.enable && !g_balance_robot.safe)
         {
-            if (g_balance_mode == BAL_APP_MODE_RETURN_REF)
+            if (g_balance_mode == BAL_APP_MODE_WHEEL_TEST)
+            {
+                BalanceApp_OutputWheelTest();
+            }
+            else if (g_balance_mode == BAL_APP_MODE_RETURN_REF)
             {
                 for (int i = 0; i < BALANCE_LEG_NUM; ++i)
                 {
@@ -338,7 +467,7 @@ static void vBalanceMotorSendTask(void *pvParameters)
     {
         BalanceMotorIf_SendCommand(&g_balance_robot);
         BalanceMotorIf_TxAllPeriodic();
-
+        CAN_Transmit_Data(&hfdcan2, 0x200, CAN2_0x200_Tx_Data, FDCAN_DLC_BYTES_8);
         vTaskDelay(pdMS_TO_TICKS(2));
     }
 }
@@ -360,7 +489,7 @@ static void vBalanceAliveTask(void *pvParameters)
 }
 
 // =====================================================
-// 串口打印任务
+// 打印任务
 // =====================================================
 static void vBalancePrintTask(void *pvParameters)
 {
@@ -370,52 +499,31 @@ static void vBalancePrintTask(void *pvParameters)
 
     for (;;)
     {
-        const float q0 = g_balance_robot.joint_angle_unwrap[BAL_JOINT_R_0].continuous;
-        const float q1 = g_balance_robot.joint_angle_unwrap[BAL_JOINT_R_1].continuous;
-        const float dq0 = g_balance_robot.joint_motor_fdb[BAL_JOINT_R_0].vel;
-        const float dq1 = g_balance_robot.joint_motor_fdb[BAL_JOINT_R_1].vel;
+        const float wl = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_L].vel;
+        const float wr = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_R].vel;
 
-        BalanceTool_PrintRaw("\r\n[balance]\r\n");
+        const float tl = g_balance_robot.wheel_motor_cmd[BAL_WHEEL_L].tor;
+        const float tr = g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].tor;
+        
+        const float pl = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_L].pos;
+        const float pr = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_R].pos;
 
-        BalanceTool_PrintFloat4Line("L0",
-                                    g_balance_robot.leg[1].rod.l0,
-                                    "dL0",
-                                    g_balance_robot.leg[1].rod.dl0);
+        BalanceTool_PrintRaw("\r\n[wheel_test]\r\n");
 
-        BalanceTool_PrintFloat4Line("phi0_deg",
-                                    BalanceTool_RadToDeg(g_balance_robot.leg[1].rod.phi0),
-                                    "dphi0_dps",
-                                    BalanceTool_RadToDeg(g_balance_robot.leg[1].rod.dphi0));
+        BalanceTool_PrintFloat4Line("wl",
+                                    wl,
+                                    "wr",
+                                    wr);
 
-        BalanceTool_PrintFloat4Line("phi1_deg",
-                                    BalanceTool_RadToDeg(g_balance_robot.leg[1].joint.phi1),
-                                    "phi4_deg",
-                                    BalanceTool_RadToDeg(g_balance_robot.leg[1].joint.phi4));
-
-        BalanceTool_PrintFloat4Line("q0_cont",
-                                    q0,
-                                    "q1_cont",
-                                    q1);
-
-        BalanceTool_PrintFloat4Line("q0_err",
-                                    g_balance_ref_pose.target_cont[2] - q0,
-                                    "q1_err",
-                                    g_balance_ref_pose.target_cont[3] - q1);
-
-        BalanceTool_PrintFloat4Line("dq0",
-                                    dq0,
-                                    "dq1",
-                                    dq1);
-
-        BalanceTool_PrintFloat4Line("mode",
-                                    (g_balance_mode == BAL_APP_MODE_RETURN_REF) ? 0.0f : 1.0f,
-                                    "ref_done",
-                                    BalanceRefPose_IsFinished(&g_balance_ref_pose) ? 1.0f : 0.0f);
-
-        BalanceTool_PrintFloat4Line("ref_active",
-                                    BalanceRefPose_IsActive(&g_balance_ref_pose) ? 1.0f : 0.0f,
-                                    "stable",
-                                    (float)g_balance_ref_pose.stable_count);
+        BalanceTool_PrintFloat4Line("tl",
+                                    tl,
+                                    "tr",
+                                    tr);
+                                    
+        BalanceTool_PrintFloat4Line("pl",
+                                    pl,
+                                    "pr",
+                                    pr);
 
         vTaskDelay(pdMS_TO_TICKS(50));
     }
