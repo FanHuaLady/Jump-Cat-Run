@@ -508,6 +508,9 @@ static void vBalancePrintTask(void *pvParameters)
         const float pl = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_L].pos;
         const float pr = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_R].pos;
 
+        const float x = g_balance_robot.body.x;
+        const float x_dot = g_balance_robot.body.x_dot;
+
         BalanceTool_PrintRaw("\r\n[wheel_test]\r\n");
 
         BalanceTool_PrintFloat4Line("wl",
@@ -524,6 +527,11 @@ static void vBalancePrintTask(void *pvParameters)
                                     pl,
                                     "pr",
                                     pr);
+
+        BalanceTool_PrintFloat4Line("x",
+                                    x,
+                                    "x_dot",
+                                    x_dot);
 
         vTaskDelay(pdMS_TO_TICKS(50));
     }

@@ -98,6 +98,21 @@ namespace
 
         return unwrap->continuous;
     }
+
+    // =====================================================
+    // 轮子位移参考零点
+    // 用于把轮子绝对角度转换成相对位移
+    // =====================================================
+    static bool g_wheel_pos_ref_inited = false;
+    static float g_wheel_pos_l_ref = 0.0f;
+    static float g_wheel_pos_r_ref = 0.0f;
+
+    static inline void BalanceWheelPosRefReset(void)
+    {
+        g_wheel_pos_ref_inited = false;
+        g_wheel_pos_l_ref = 0.0f;
+        g_wheel_pos_r_ref = 0.0f;
+    }
 }
 
 void BalanceObserver_Init(BalanceRobot* robot)
@@ -109,14 +124,17 @@ void BalanceObserver_Init(BalanceRobot* robot)
 
     robot->dt = BALANCE_CTRL_DT;                                // 设置控制周期
     robot->enable = false;                                      // 未使能
-    robot->safe = true;                                         // ？
+    robot->safe = true;                                         // 安全状态
 
     robot->body.x = 0.0f;                                       // 机体位移
     robot->body.x_dot = 0.0f;                                   // 机体速度
     robot->body.x_acc = 0.0f;                                   // 加速度
-    robot->body.x_dot_obv = 0.0f;                               // 
-    robot->body.x_acc_obv = 0.0f;                               // 
-    
+    robot->body.x_dot_obv = 0.0f;                               // 观测速
+    robot->body.x_acc_obv = 0.0f;                               // 观测加速度
+
+    // 重置轮子位移参考零点
+    BalanceWheelPosRefReset();
+
     // 初始化每个电机的角度解包器
     for (int i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
@@ -153,8 +171,6 @@ void BalanceObserver_UpdateBody(BalanceRobot* robot)
     robot->body.yaw_dot = robot->imu.yaw_dot;
 
     // 平衡主平面暂用 pitch
-    // 机体俯仰角 用于LQR
-    // 机体俯仰角速度 用于LQR
     robot->body.phi = BalanceWrapPi(robot->body.pitch);
     robot->body.phi_dot = robot->body.pitch_dot;
 
@@ -282,8 +298,9 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
     }
 }
 
-// 简化版速度观测：
-// 左右轮角速度平均 * 轮半径 = 前向线速度
+// 位移与速度观测：
+// x_dot 继续用左右轮角速度平均 * 轮半径
+// x 改为左右轮相对角位移平均 * 轮半径
 void BalanceObserver_UpdateVelocity(BalanceRobot* robot)
 {
     if (robot == nullptr)
@@ -291,16 +308,48 @@ void BalanceObserver_UpdateVelocity(BalanceRobot* robot)
         return;
     }
 
-    const float speed =
-        BALANCE_DEFAULT_WHEEL_RADIUS *
-        (robot->leg[0].wheel_vel + robot->leg[1].wheel_vel) * 0.5f;
+    const float wheel_radius = BALANCE_DEFAULT_WHEEL_RADIUS;                // 轮足半径
 
-    robot->body.x_dot_obv = speed;
+    // 当前左右轮连续角度 / 角速度
+    const float pos_l = robot->wheel_motor_fdb[BAL_WHEEL_L].pos;            // 这里用绝对角度，后面再减去参考零点
+    const float pos_r = robot->wheel_motor_fdb[BAL_WHEEL_R].pos;
+    const float vel_l = robot->wheel_motor_fdb[BAL_WHEEL_L].vel;            // 这里直接用轮速，不需要参考零点
+    const float vel_r = robot->wheel_motor_fdb[BAL_WHEEL_R].vel;
+
+    const bool online_l = robot->wheel_motor_fdb[BAL_WHEEL_L].online;
+    const bool online_r = robot->wheel_motor_fdb[BAL_WHEEL_R].online;
+
+    // =========================
+    // x_dot：继续由轮速得到
+    // =========================
+    const float speed = wheel_radius * (vel_l + vel_r) * 0.5f;              // 轮速平均 * 轮半径 = 车体前向速度
+
+    robot->body.x_dot_obv = speed;                                          // 观测速度
     robot->body.x_acc_obv = robot->body.x_acc;
-    robot->body.x_dot = robot->body.x_dot_obv;
+    robot->body.x_dot = robot->body.x_dot_obv;                              // 直接把观测速度赋给 x_dot，后续如果要做滤波或者其他处理，可以在观测速度的基础上改这里
 
-    // 第一版直接积分出 x
-    robot->body.x += robot->body.x_dot_obv * robot->dt;
+    // =========================
+    // x：改由轮角相对位移得到
+    // 只有左右轮都在线时，才初始化参考零点
+    // =========================
+    if (!g_wheel_pos_ref_inited)                                            // 第一次进入
+    {
+        if (online_l && online_r)
+        {
+            g_wheel_pos_l_ref = pos_l;                                      // 以第一次进入时的轮子绝对角度作为参考零点
+            g_wheel_pos_r_ref = pos_r;
+            g_wheel_pos_ref_inited = true;
+        }
+
+        // 参考零点还没准备好时，先保持 x = 0
+        robot->body.x = 0.0f;
+        return;
+    }
+
+    const float delta_l = pos_l - g_wheel_pos_l_ref;                        // 轮子绝对角度 - 参考零点 = 轮子相对角位移
+    const float delta_r = pos_r - g_wheel_pos_r_ref;
+
+    robot->body.x = wheel_radius * (delta_l + delta_r) * 0.5f;              // 轮子相对角位移平均 * 轮半径 = 车体前向位移
 }
 
 void BalanceObserver_UpdateLqrState(BalanceRobot* robot)

@@ -92,8 +92,8 @@ typedef struct BalanceBodyState
     float phi_dot;                              // 平衡模型的机体俯仰角速度
 
     float x;                                    // 车体前向位置
-    float x_dot;
-    float x_acc;
+    float x_dot;                                // 车体前向速度
+    float x_acc;                                // 车体前向加速度
 
     float x_dot_obv;
     float x_acc_obv;
