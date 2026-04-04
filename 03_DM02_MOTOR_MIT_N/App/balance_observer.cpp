@@ -100,6 +100,50 @@ namespace
     }
 
     // =====================================================
+    // 启动姿态自动捕获：
+    // 每个关节第一次拿到 continuous 时，记录：
+    // cont_ref = continuous_init
+    // phi_ref  = sign * continuous_init
+    //
+    // 这样后续：
+    // phi = sign * (continuous - cont_ref) + phi_ref
+    // 就表示：
+    // 当前模型角 = 电机相对启动姿态的变化角 + 启动时模型角
+    // =====================================================
+    static bool  g_joint_start_ref_inited[BALANCE_JOINT_NUM] = {false, false, false, false};
+    static float g_joint_cont_ref[BALANCE_JOINT_NUM] = {0.0f, 0.0f, 0.0f, 0.0f};
+    static float g_joint_phi_ref[BALANCE_JOINT_NUM]  = {0.0f, 0.0f, 0.0f, 0.0f};
+
+    static inline void BalanceJointStartRefReset(void)
+    {
+        for (int i = 0; i < BALANCE_JOINT_NUM; ++i)
+        {
+            g_joint_start_ref_inited[i] = false;
+            g_joint_cont_ref[i] = 0.0f;
+            g_joint_phi_ref[i] = 0.0f;
+        }
+    }
+
+    static inline void BalanceJointStartRefTryInit(int joint_index,
+                                                   float continuous,
+                                                   float sign)
+    {
+        if (joint_index < 0 || joint_index >= BALANCE_JOINT_NUM)
+        {
+            return;
+        }
+
+        if (g_joint_start_ref_inited[joint_index])
+        {
+            return;
+        }
+
+        g_joint_cont_ref[joint_index] = continuous;
+        g_joint_phi_ref[joint_index] = sign * continuous;
+        g_joint_start_ref_inited[joint_index] = true;                           // 初始化完毕
+    }
+
+    // =====================================================
     // 轮子位移参考零点
     // 用于把轮子绝对角度转换成相对位移
     // =====================================================
@@ -134,6 +178,9 @@ void BalanceObserver_Init(BalanceRobot* robot)
 
     // 重置轮子位移参考零点
     BalanceWheelPosRefReset();
+
+    // 重置启动姿态参考
+    BalanceJointStartRefReset();
 
     // 初始化每个电机的角度解包器
     for (int i = 0; i < BALANCE_JOINT_NUM; ++i)
@@ -197,15 +244,20 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
         const float joint1_cont =
             BalanceAngleUnwrapUpdate(&robot->joint_angle_unwrap[BAL_JOINT_L_1], joint1_raw);
 
-        // 参考姿态映射
+        // 启动姿态自动捕获参考
+        BalanceJointStartRefTryInit(BAL_JOINT_L_0, joint0_cont, BALANCE_JOINT_L0_SIGN);
+        BalanceJointStartRefTryInit(BAL_JOINT_L_1, joint1_cont, BALANCE_JOINT_L1_SIGN);
+
+        // 启动姿态映射：
+        // 当前模型角 = 电机相对启动姿态变化角 + 启动时模型角
         leg.joint.phi1 = BalanceApplyJointMount(joint0_cont,
                                                 BALANCE_JOINT_L0_SIGN,
-                                                BALANCE_JOINT_L0_CONT_REF,
-                                                BALANCE_JOINT_L0_PHI_REF);
+                                                g_joint_cont_ref[BAL_JOINT_L_0],
+                                                g_joint_phi_ref[BAL_JOINT_L_0]);
         leg.joint.phi4 = BalanceApplyJointMount(joint1_cont,
                                                 BALANCE_JOINT_L1_SIGN,
-                                                BALANCE_JOINT_L1_CONT_REF,
-                                                BALANCE_JOINT_L1_PHI_REF);
+                                                g_joint_cont_ref[BAL_JOINT_L_1],
+                                                g_joint_phi_ref[BAL_JOINT_L_1]);
 
         // 速度、力矩也统一到同一个关节坐标系
         leg.joint.dphi1 = BALANCE_JOINT_L0_SIGN * robot->joint_motor_fdb[BAL_JOINT_L_0].vel;
@@ -231,7 +283,7 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
         leg.rod.dl0 = d_l0_d_phi0[0];                                           // 虚拟腿长变化率
         leg.rod.dphi0 = d_l0_d_phi0[1];                                         // 虚拟腿角速度
         leg.rod.dtheta = -leg.rod.dphi0 - robot->body.phi_dot;                  // 虚拟腿角速度 - 机体角速度
-            
+
         // 第一版先固定不做离地判定
         leg.is_take_off = false;
 
@@ -253,15 +305,20 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
         const float joint1_cont =
             BalanceAngleUnwrapUpdate(&robot->joint_angle_unwrap[BAL_JOINT_R_1], joint1_raw);
 
-        // 参考姿态映射
+        // 启动姿态自动捕获参考
+        BalanceJointStartRefTryInit(BAL_JOINT_R_0, joint0_cont, BALANCE_JOINT_R0_SIGN);
+        BalanceJointStartRefTryInit(BAL_JOINT_R_1, joint1_cont, BALANCE_JOINT_R1_SIGN);
+
+        // 启动姿态映射：
+        // 当前模型角 = 电机相对启动姿态变化角 + 启动时模型角
         leg.joint.phi1 = BalanceApplyJointMount(joint0_cont,
                                                 BALANCE_JOINT_R0_SIGN,
-                                                BALANCE_JOINT_R0_CONT_REF,
-                                                BALANCE_JOINT_R0_PHI_REF);
+                                                g_joint_cont_ref[BAL_JOINT_R_0],
+                                                g_joint_phi_ref[BAL_JOINT_R_0]);
         leg.joint.phi4 = BalanceApplyJointMount(joint1_cont,
                                                 BALANCE_JOINT_R1_SIGN,
-                                                BALANCE_JOINT_R1_CONT_REF,
-                                                BALANCE_JOINT_R1_PHI_REF);
+                                                g_joint_cont_ref[BAL_JOINT_R_1],
+                                                g_joint_phi_ref[BAL_JOINT_R_1]);
 
         // 速度、力矩也统一到同一个关节坐标系
         leg.joint.dphi1 = BALANCE_JOINT_R0_SIGN * robot->joint_motor_fdb[BAL_JOINT_R_0].vel;

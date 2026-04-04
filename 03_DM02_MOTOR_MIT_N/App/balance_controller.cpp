@@ -13,20 +13,20 @@ namespace
     // =========================
     // 腿长控制参数
     // =========================
-    static constexpr float k_leg_len_kp = 12.0f;
+    static constexpr float k_leg_len_kp = 6.0f;
     static constexpr float k_leg_len_kd = 0.8f;
 
     // =========================
     // 虚拟杆角度控制参数
     // =========================
-    static constexpr float k_leg_ang_kp = 12.0f;
+    static constexpr float k_leg_ang_kp = 6.0f;
     static constexpr float k_leg_ang_kd = 0.8f;
 
     // =========================
     // 当前第一版目标虚拟杆角度
     // =========================
     // static constexpr float k_leg_ang_ref = -1.6580f;
-    static constexpr float k_leg_ang_ref = -1.9198f;
+    static constexpr float k_leg_ang_ref = -1.3198f;
     static inline float BalanceClamp(float x, float min_v, float max_v)
     {
         if (x < min_v) return min_v;
