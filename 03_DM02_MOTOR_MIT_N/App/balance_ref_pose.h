@@ -11,15 +11,15 @@ struct BalanceRobot;
 
 typedef enum
 {
-    BALANCE_REF_POSE_MODE_LEFT_ONLY = 0,
-    BALANCE_REF_POSE_MODE_RIGHT_ONLY = 1,
-    BALANCE_REF_POSE_MODE_BOTH = 2,
+    BALANCE_REF_POSE_MODE_LEFT_ONLY = 0,                        // 只调整左腿
+    BALANCE_REF_POSE_MODE_RIGHT_ONLY = 1,                       // 只调整右腿
+    BALANCE_REF_POSE_MODE_BOTH = 2,                             // 同时调整左右腿，保持身体水平
 } BalanceRefPoseMode;
 
 struct BalanceRefPoseState
 {
-    bool active;
-    bool finished;
+    bool active;                                                // 是否正在执行回参考姿态
+    bool finished;                                              // 是否已经完成回参考姿态   
     uint16_t stable_count;
 
     BalanceRefPoseMode mode;

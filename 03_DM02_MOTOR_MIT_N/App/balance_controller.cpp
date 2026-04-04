@@ -113,10 +113,10 @@ void BalanceController_SetRef(BalanceRobot* robot)
     // 第一版：全部写死
     // 先只做原地站立准备
     // =========================
-    robot->ref.target_leg_length[0] = BALANCE_DEFAULT_LEG_LEN_STAND;
-    robot->ref.target_leg_length[1] = BALANCE_DEFAULT_LEG_LEN_STAND;
+    robot->ref.target_leg_length[0] = BALANCE_DEFAULT_LEG_LEN_STAND;            // 左腿目标腿长
+    robot->ref.target_leg_length[1] = BALANCE_DEFAULT_LEG_LEN_STAND;            // 右腿目标腿长
 
-    robot->ref.target_vx = 0.0f;
+    robot->ref.target_vx = 0.0f;                                                // 线速度参考值，正前方为正
     robot->ref.target_wz = 0.0f;
     robot->ref.target_roll = 0.0f;
 }
@@ -134,11 +134,11 @@ void BalanceController_LegLength(BalanceRobot* robot)
     // =========================
     for (int i = 0; i < BALANCE_LEG_NUM; ++i)
     {
-        const float l_ref  = robot->ref.target_leg_length[i];  // 目标腿长
-        const float l_now  = robot->leg[i].rod.l0;             // 当前虚拟腿长
-        const float dl_now = robot->leg[i].rod.dl0;            // 当前虚拟腿长变化率
+        const float l_ref  = robot->ref.target_leg_length[i];                   // 目标腿长
+        const float l_now  = robot->leg[i].rod.l0;                              // 当前虚拟腿长
+        const float dl_now = robot->leg[i].rod.dl0;                             // 当前虚拟腿长变化率
 
-        const float err_l = l_ref - l_now;
+        const float err_l = l_ref - l_now;                                      // 腿长误差 
 
         // 腿长 PD
         float rod_f = k_leg_len_kp * err_l - k_leg_len_kd * dl_now;

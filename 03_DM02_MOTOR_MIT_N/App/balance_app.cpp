@@ -412,36 +412,36 @@ static void vBalanceControlTask(void *pvParameters)
 
     for (;;)
     {
-        BalanceMotorIf_UpdateFeedback(&g_balance_robot);
-        BalanceImuIf_Update(&g_balance_robot.imu);
-        BalanceObserver_UpdateAll(&g_balance_robot);
+        BalanceMotorIf_UpdateFeedback(&g_balance_robot);                        // 更新电机反馈
+        BalanceImuIf_Update(&g_balance_robot.imu);                              // 更新IMU数据
+        BalanceObserver_UpdateAll(&g_balance_robot);                            // 更新观察器，计算出身体状态和腿状态等
 
         if (g_balance_robot.enable && !g_balance_robot.safe)
         {
             if (g_balance_mode == BAL_APP_MODE_WHEEL_TEST)
             {
-                BalanceApp_OutputWheelTest();
+                BalanceApp_OutputWheelTest();                                   // 输出轮子测试命令
             }
-            else if (g_balance_mode == BAL_APP_MODE_RETURN_REF)
+            else if (g_balance_mode == BAL_APP_MODE_RETURN_REF)                 // 回参考姿态模式
             {
                 for (int i = 0; i < BALANCE_LEG_NUM; ++i)
                 {
                     ClearLegCmd(&g_balance_robot.cmd[i]);
                 }
 
-                BalanceRefPose_Update(&g_balance_ref_pose, &g_balance_robot);
+                BalanceRefPose_Update(&g_balance_ref_pose, &g_balance_robot);   // 更新回参考姿态模块，计算出回参考姿态的命令
 
                 if (BalanceRefPose_IsFinished(&g_balance_ref_pose))
                 {
-                    BalanceApp_SwitchToNormalMode();
+                    BalanceApp_SwitchToNormalMode();                            // 回参考姿态完成，切换到正常模式
                 }
             }
             else
             {
-                BalanceController_SetRef(&g_balance_robot);
-                BalanceController_LegLength(&g_balance_robot);
-                BalanceController_LegAngle(&g_balance_robot);
-                BalanceController_Output(&g_balance_robot);
+                BalanceController_SetRef(&g_balance_robot);                     // 设置控制器的参考值，主要是身体状态的参考值
+                BalanceController_LegLength(&g_balance_robot);                  // 计算腿长控制命令，输出到 g_balance_robot.cmd[i].rod_f
+                BalanceController_LegAngle(&g_balance_robot);                   // 计算腿角控制命令，输出到 g_balance_robot.cmd[i].rod_tp
+                BalanceController_Output(&g_balance_robot);                     // 计算最终的电机命令，输出到 g_balance_robot.joint_motor_cmd 和 g_balance_robot.wheel_motor_cmd
             }
         }
         else
