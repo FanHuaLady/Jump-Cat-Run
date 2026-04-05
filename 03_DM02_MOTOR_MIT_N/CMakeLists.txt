@@ -47,6 +47,10 @@ file(GLOB_RECURSE USER_SOURCES
     ${CMAKE_SOURCE_DIR}/User_File/**/*.c
     ${CMAKE_SOURCE_DIR}/User_File/**/*.cpp
 )
+file(GLOB_RECURSE APP_SOURCES
+    ${CMAKE_SOURCE_DIR}/App/**/*.c
+    ${CMAKE_SOURCE_DIR}/App/**/*.cpp
+)
 
 # 递归收集 User_File 目录下所有包含 .h 文件的目录，并去重
 file(GLOB_RECURSE USER_HEADER_PATHS ${CMAKE_SOURCE_DIR}/User_File/**/*.h)
@@ -72,6 +76,7 @@ include_directories(${USER_INCLUDE_DIRS})
 # 添加源文件到 target
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${USER_SOURCES}
+    ${APP_SOURCES}
     # Add user sources here
 )
 
@@ -83,6 +88,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${USER_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/Core/Inc
+    ${CMAKE_SOURCE_DIR}/App/Gimbal
     ${CMAKE_SOURCE_DIR}/Drivers/STM32H7xx_HAL_Driver/Inc
     ${CMAKE_SOURCE_DIR}/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     ${CMAKE_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32H7xx/Include

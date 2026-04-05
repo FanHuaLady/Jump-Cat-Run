@@ -61,50 +61,41 @@ void Class_PID::Init(const float &__K_P, const float &__K_I, const float &__K_D,
  */
 void Class_PID::TIM_Calculate_PeriodElapsedCallback()
 {
-    // P输出
-    float p_out = 0.0f;
-    // I输出
-    float i_out = 0.0f;
-    // D输出
-    float d_out = 0.0f;
-    // F输出
-    float f_out = 0.0f;
-    // 误差
-    float error;
-    // 绝对值误差
-    float abs_error;
-    // 线性变速积分
-    float speed_ratio;
+    float p_out = 0.0f;                                             // P输出
+    float i_out = 0.0f;                                             // I输出
+    float d_out = 0.0f;                                             // D输出
+    float f_out = 0.0f;                                             // F输出
+    float error;                                                    // 误差
+    float abs_error;                                                // 绝对值误差
+    float speed_ratio;                                              // 线性变速积分
 
-    error = Target - Now;
-    abs_error = Basic_Math_Abs(error);
+    error = Target - Now;                                           // 获取误差值
+    abs_error = Basic_Math_Abs(error);                              // 获得误差绝对值
 
-    // 判断死区
-    if (abs_error < Dead_Zone)
+    // 作用就是让PID系统忽略误差
+    if (abs_error < Dead_Zone)                                      // 判断死区
     {
-        Target = Now;
-        error = 0.0f;
-        abs_error = 0.0f;
+        Target = Now;                                               // 视为已经达到目标
+        error = 0.0f;                                               // 设置误差为0
+        abs_error = 0.0f;                                           // 设置绝对误差为0
     }
     else if (error > 0.0f && abs_error > Dead_Zone)
     {
-        error -= Dead_Zone;
+        error -= Dead_Zone;                                         // 在误差超出死区后能够平滑过渡
     }
     else if (error < 0.0f && abs_error > Dead_Zone)
     {
         error += Dead_Zone;
     }
+    p_out = K_P * error;                                            // 计算p项
 
-    // 计算p项
 
-    p_out = K_P * error;
-
-    // 计算i项
-
-    if (I_Variable_Speed_A == 0.0f && I_Variable_Speed_B == 0.0f)
+    // 当用户没有启用变速积分功能时，将积分速度系数设为固定值 1.0
+    // “非变速积分”指的是传统的积分方式，即积分项的计算速度（积分系数）是恒定不变的
+    // 在代码中表现为 speed_ratio = 1.0f，也就是说积分累加的速率一直保持不变
+    if (I_Variable_Speed_A == 0.0f && I_Variable_Speed_B == 0.0f)   // 计算i项
     {
-        // 非变速积分
-        speed_ratio = 1.0f;
+        speed_ratio = 1.0f;                                         // 非变速积分
     }
     else
     {
@@ -122,16 +113,17 @@ void Class_PID::TIM_Calculate_PeriodElapsedCallback()
             speed_ratio = 0.0f;
         }
     }
-    // 积分限幅
-    if (I_Out_Max != 0.0f)
+    if (I_Out_Max != 0.0f)                                          // 积分限幅
     {
         Basic_Math_Constrain(&Integral_Error, -I_Out_Max / K_I, I_Out_Max / K_I);
     }
-    if (I_Separate_Threshold == 0.0f)
+
+    if (I_Separate_Threshold == 0.0f)                               // 积分分离阈值，需为正数, 0为不限制
     {
         // 没有积分分离
-        Integral_Error += speed_ratio * D_T * error;
-        i_out = K_I * Integral_Error;
+        // DT是PID计时器周期, s
+        Integral_Error += speed_ratio * D_T * error;                // 误差累积
+        i_out = K_I * Integral_Error;                               // I的输出
     }
     else
     {
@@ -167,9 +159,7 @@ void Class_PID::TIM_Calculate_PeriodElapsedCallback()
 
     f_out = K_F * (Target - Pre_Target);
 
-    // 计算输出
-
-    Out = p_out + i_out + d_out + f_out;
+    Out = p_out + i_out + d_out + f_out;                            // 计算输出
 
     // 输出限幅
     if (Out_Max != 0.0f)

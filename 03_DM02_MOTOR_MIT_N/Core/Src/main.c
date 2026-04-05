@@ -32,6 +32,8 @@
 #include "usb_device.h"
 #include "gpio.h"
 
+#include "usb_test.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -122,7 +124,7 @@ int main(void)
   MX_USART10_UART_Init();
   MX_SPI2_Init();
   MX_SPI6_Init();
-  MX_IWDG1_Init();
+  // MX_IWDG1_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
@@ -134,8 +136,9 @@ int main(void)
   MX_CORDIC_Init();
   MX_OCTOSPI2_Init();
   MX_TIM4_Init();
+
   /* USER CODE BEGIN 2 */
-    Task_Init();
+  Bmi088_test();
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
@@ -150,7 +153,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    Task_Loop();
+    Bmi088_test_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
