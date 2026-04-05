@@ -4,19 +4,21 @@
 
 namespace
 {
-    BalanceMotorBinding g_joint_binding[BALANCE_JOINT_NUM];
-    BalanceMotorBinding g_wheel_binding[BALANCE_WHEEL_NUM];
-    
-    // 简单的限幅函数，将值限制在 [min_v, max_v] 区间内
+    BalanceJointMotorBinding g_joint_binding[BALANCE_JOINT_NUM];
+    BalanceWheelMotorBinding g_wheel_binding[BALANCE_WHEEL_NUM];
+
     static inline float BalanceClamp(float x, float min_v, float max_v)
     {
         if (x < min_v) return min_v;
         if (x > max_v) return max_v;
         return x;
     }
-    
-    // 判断电机是否在线（使能状态）
-    static inline bool BalanceMotorOnline(const BalanceDmMotor* motor)
+
+    // =========================
+    // 关节达妙
+    // =========================
+
+    static inline bool BalanceJointMotorOnline(const BalanceDmMotor* motor)
     {
         if (motor == nullptr)
         {
@@ -25,9 +27,9 @@ namespace
 
         return (motor->Get_Status() == Motor_DM_Status_ENABLE);
     }
-    
-    // 将电机对象的状态填充到反馈结构体
-    static inline void BalanceFillFdbFromDm(BalanceMotorFdb* out, const BalanceDmMotor* motor)
+
+    static inline void BalanceFillFdbFromDm(BalanceMotorFdb* out,
+                                            const BalanceDmMotor* motor)
     {
         if (out == nullptr)
         {
@@ -43,13 +45,12 @@ namespace
             return;
         }
 
-        out->pos = motor->Get_Now_Angle();                          // 填充角度
-        out->vel = motor->Get_Now_Omega();                          // 填充角速度
-        out->tor = motor->Get_Now_Torque();                         // 填充力矩
-        out->online = BalanceMotorOnline(motor);                    // 判断是否在线
+        out->pos = motor->Get_Now_Angle();
+        out->vel = motor->Get_Now_Omega();
+        out->tor = motor->Get_Now_Torque();
+        out->online = BalanceJointMotorOnline(motor);
     }
-    
-    // 将控制指令应用到电机对象
+
     static inline void BalanceApplyCmdToDm(BalanceDmMotor* motor,
                                            const BalanceMotorCmd* cmd,
                                            float torque_limit,
@@ -63,8 +64,6 @@ namespace
 
         if (!cmd->enable)
         {
-            // 这里不主动发 Exit，只把控制量清零
-            // 这样更安全，也避免频繁使能/失能抖动
             motor->Set_Control_Angle(0.0f);
             motor->Set_Control_Omega(0.0f);
             motor->Set_Control_Torque(0.0f);
@@ -75,20 +74,88 @@ namespace
 
         const float pos = cmd->pos;
         const float vel = cmd->vel;
-        const float tor = BalanceClamp(cmd->tor, -torque_limit, torque_limit);  // 限幅
-        const float kp  = BalanceClamp(cmd->kp,  0.0f, kp_limit);               // 限幅
-        const float kd  = BalanceClamp(cmd->kd,  0.0f, kd_limit);               // 限幅
+        const float tor = BalanceClamp(cmd->tor, -torque_limit, torque_limit);
+        const float kp  = BalanceClamp(cmd->kp,  0.0f, kp_limit);
+        const float kd  = BalanceClamp(cmd->kd,  0.0f, kd_limit);
 
-        motor->Set_Control_Angle(pos);                                          // 设定角度
-        motor->Set_Control_Omega(vel);                                          // 设定角速度
-        motor->Set_Control_Torque(tor);                                         // 设定力矩
-        motor->Set_K_P(kp);                                                     // 设定Kp
-        motor->Set_K_D(kd);                                                     // 设定Kd
+        motor->Set_Control_Angle(pos);
+        motor->Set_Control_Omega(vel);
+        motor->Set_Control_Torque(tor);
+        motor->Set_K_P(kp);
+        motor->Set_K_D(kd);
+    }
+
+    // =========================
+    // 轮子大疆 C620
+    // 只使用力矩模式
+    // =========================
+
+    static inline bool BalanceWheelMotorOnline(const BalanceDjiWheelMotor* motor)
+    {
+        if (motor == nullptr)
+        {
+            return false;
+        }
+
+        return (motor->Get_Status() == Motor_DJI_Status_ENABLE);
+    }
+
+    static inline void BalanceFillFdbFromDji(BalanceMotorFdb* out,
+                                             const BalanceDjiWheelMotor* motor)
+    {
+        if (out == nullptr)
+        {
+            return;
+        }
+
+        if (motor == nullptr)
+        {
+            out->pos = 0.0f;
+            out->vel = 0.0f;
+            out->tor = 0.0f;
+            out->online = false;
+            return;
+        }
+
+        out->pos = motor->Get_Now_Angle();
+        out->vel = motor->Get_Now_Omega();
+        out->tor = motor->Get_Now_Torque();
+        out->online = BalanceWheelMotorOnline(motor);
+    }
+
+    static inline void BalanceApplyCmdToDji(BalanceDjiWheelMotor* motor,
+                                            const BalanceMotorCmd* cmd,
+                                            float torque_limit)
+    {
+        if ((motor == nullptr) || (cmd == nullptr))
+        {
+            return;
+        }
+
+        const float tor = cmd->enable
+                            ? BalanceClamp(cmd->tor, -torque_limit, torque_limit)
+                            : 0.0f;
+
+        // 轮子只走力矩模式
+        // 这里不使用 pos / vel / kp / kd
+        motor->Set_Target_Torque(tor);
+    }
+
+    static inline void BalanceClearFdb(BalanceMotorFdb* fdb)
+    {
+        if (fdb == nullptr)
+        {
+            return;
+        }
+
+        fdb->pos = 0.0f;
+        fdb->vel = 0.0f;
+        fdb->tor = 0.0f;
+        fdb->online = false;
     }
 }
 
-// 将所有 motor 指针置为 nullptr，registered 置为 false
-void BalanceMotorIf_Init()
+void BalanceMotorIf_Init(void)
 {
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
@@ -103,8 +170,6 @@ void BalanceMotorIf_Init()
     }
 }
 
-// 将关节电机对象绑定到指定索引。检查索引范围和非空指针，成功后设置绑定结构体并返回 true
-// 我们需要使用这个函数，将我们的电机进行注册
 bool BalanceMotorIf_RegisterJoint(uint8_t index, BalanceDmMotor* motor)
 {
     if (index >= BALANCE_JOINT_NUM)
@@ -122,8 +187,7 @@ bool BalanceMotorIf_RegisterJoint(uint8_t index, BalanceDmMotor* motor)
     return true;
 }
 
-// 将非关节电机对象绑定到指定索引。检查索引范围和非空指针，成功后设置绑定结构体并返回 true
-bool BalanceMotorIf_RegisterWheel(uint8_t index, BalanceDmMotor* motor)
+bool BalanceMotorIf_RegisterWheel(uint8_t index, BalanceDjiWheelMotor* motor)
 {
     if (index >= BALANCE_WHEEL_NUM)
     {
@@ -140,8 +204,6 @@ bool BalanceMotorIf_RegisterWheel(uint8_t index, BalanceDmMotor* motor)
     return true;
 }
 
-// 需要传入JumpCat本体
-// 遍历所有已注册的电机，调用 BalanceFillFdbFromDm 填充机器人的反馈数组
 void BalanceMotorIf_UpdateFeedback(BalanceRobot* robot)
 {
     if (robot == nullptr)
@@ -149,49 +211,33 @@ void BalanceMotorIf_UpdateFeedback(BalanceRobot* robot)
         return;
     }
 
+    // 关节：达妙
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
-        // 遍历已经注册的电机
-        if (g_joint_binding[i].registered)
+        if (g_joint_binding[i].registered && g_joint_binding[i].motor != nullptr)
         {
-            // 调用这个函数
-            // 传入整个机体的关节电机的接收数组
-            // 传入我们的电机
-            // 这其实算是一个数据转移，前提是电机对上
-            
-            // 总之这个函数会让robot->joint_motor_fdb[i]
-            // 获取角度、角速度、力矩、在线情况
-            
-            // 注意注册的时候对照事先规定的关节电机索引
-            // 这样才能正常的获得数据
             BalanceFillFdbFromDm(&robot->joint_motor_fdb[i], g_joint_binding[i].motor);
         }
         else
         {
-            robot->joint_motor_fdb[i].pos = 0.0f;
-            robot->joint_motor_fdb[i].vel = 0.0f;
-            robot->joint_motor_fdb[i].tor = 0.0f;
-            robot->joint_motor_fdb[i].online = false;
+            BalanceClearFdb(&robot->joint_motor_fdb[i]);
         }
     }
 
+    // 轮子：大疆
     for (uint8_t i = 0; i < BALANCE_WHEEL_NUM; ++i)
     {
-        if (g_wheel_binding[i].registered)
+        if (g_wheel_binding[i].registered && g_wheel_binding[i].motor != nullptr)
         {
-            BalanceFillFdbFromDm(&robot->wheel_motor_fdb[i], g_wheel_binding[i].motor);
+            BalanceFillFdbFromDji(&robot->wheel_motor_fdb[i], g_wheel_binding[i].motor);
         }
         else
         {
-            robot->wheel_motor_fdb[i].pos = 0.0f;
-            robot->wheel_motor_fdb[i].vel = 0.0f;
-            robot->wheel_motor_fdb[i].tor = 0.0f;
-            robot->wheel_motor_fdb[i].online = false;
+            BalanceClearFdb(&robot->wheel_motor_fdb[i]);
         }
     }
 }
 
-// 遍历所有已注册的电机，调用 BalanceApplyCmdToDm 将机器人控制指令（cmd 数组）下发给电机
 void BalanceMotorIf_SendCommand(const BalanceRobot* robot)
 {
     if (robot == nullptr)
@@ -199,9 +245,10 @@ void BalanceMotorIf_SendCommand(const BalanceRobot* robot)
         return;
     }
 
+    // 关节：达妙，保留 MIT 风格接口
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
-        if (!g_joint_binding[i].registered)
+        if (!g_joint_binding[i].registered || g_joint_binding[i].motor == nullptr)
         {
             continue;
         }
@@ -213,24 +260,23 @@ void BalanceMotorIf_SendCommand(const BalanceRobot* robot)
                             BALANCE_DEFAULT_JOINT_KD_LIMIT);
     }
 
+    // 轮子：大疆，只发力矩
     for (uint8_t i = 0; i < BALANCE_WHEEL_NUM; ++i)
     {
-        if (!g_wheel_binding[i].registered)
+        if (!g_wheel_binding[i].registered || g_wheel_binding[i].motor == nullptr)
         {
             continue;
         }
 
-        BalanceApplyCmdToDm(g_wheel_binding[i].motor,
-                            &robot->wheel_motor_cmd[i],
-                            BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT,
-                            BALANCE_DEFAULT_JOINT_KP_LIMIT,
-                            BALANCE_DEFAULT_JOINT_KD_LIMIT);
+        BalanceApplyCmdToDji(g_wheel_binding[i].motor,
+                             &robot->wheel_motor_cmd[i],
+                             BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT);
     }
 }
 
-// 立即将所有已注册电机的控制量和PID系数置零
-void BalanceMotorIf_DisableAll()
+void BalanceMotorIf_DisableAll(void)
 {
+    // 关节：清零 MIT 控制量
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
         if (!g_joint_binding[i].registered || g_joint_binding[i].motor == nullptr)
@@ -245,6 +291,7 @@ void BalanceMotorIf_DisableAll()
         g_joint_binding[i].motor->Set_K_D(0.0f);
     }
 
+    // 轮子：只清零目标力矩
     for (uint8_t i = 0; i < BALANCE_WHEEL_NUM; ++i)
     {
         if (!g_wheel_binding[i].registered || g_wheel_binding[i].motor == nullptr)
@@ -252,17 +299,13 @@ void BalanceMotorIf_DisableAll()
             continue;
         }
 
-        g_wheel_binding[i].motor->Set_Control_Angle(0.0f);
-        g_wheel_binding[i].motor->Set_Control_Omega(0.0f);
-        g_wheel_binding[i].motor->Set_Control_Torque(0.0f);
-        g_wheel_binding[i].motor->Set_K_P(0.0f);
-        g_wheel_binding[i].motor->Set_K_D(0.0f);
+        g_wheel_binding[i].motor->Set_Target_Torque(0.0f);
     }
 }
 
-// 分别调用每个已注册电机的 CAN_Send_Exit()
-void BalanceMotorIf_SendExitAll()
+void BalanceMotorIf_SendExitAll(void)
 {
+    // 关节：继续保留 DM 的 enter / exit
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
         if (g_joint_binding[i].registered && g_joint_binding[i].motor != nullptr)
@@ -271,18 +314,19 @@ void BalanceMotorIf_SendExitAll()
         }
     }
 
+    // 轮子：没有必要发 DM 风格 Exit，直接清零力矩更稳
     for (uint8_t i = 0; i < BALANCE_WHEEL_NUM; ++i)
     {
         if (g_wheel_binding[i].registered && g_wheel_binding[i].motor != nullptr)
         {
-            g_wheel_binding[i].motor->CAN_Send_Exit();
+            g_wheel_binding[i].motor->Set_Target_Torque(0.0f);
         }
     }
 }
 
-// 分别调用每个已注册电机的 CAN_Send_Enter()
-void BalanceMotorIf_SendEnterAll()
+void BalanceMotorIf_SendEnterAll(void)
 {
+    // 关节：继续保留 DM 的 enter
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
         if (g_joint_binding[i].registered && g_joint_binding[i].motor != nullptr)
@@ -291,16 +335,11 @@ void BalanceMotorIf_SendEnterAll()
         }
     }
 
-    for (uint8_t i = 0; i < BALANCE_WHEEL_NUM; ++i)
-    {
-        if (g_wheel_binding[i].registered && g_wheel_binding[i].motor != nullptr)
-        {
-            g_wheel_binding[i].motor->CAN_Send_Enter();
-        }
-    }
+    // 轮子：DJI 这里不需要做 DM 风格 enter
+    // 保持空操作即可
 }
 
-void BalanceMotorIf_TxAllPeriodic()
+void BalanceMotorIf_TxAllPeriodic(void)
 {
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
@@ -314,12 +353,12 @@ void BalanceMotorIf_TxAllPeriodic()
     {
         if (g_wheel_binding[i].registered && g_wheel_binding[i].motor != nullptr)
         {
-            g_wheel_binding[i].motor->TIM_Send_PeriodElapsedCallback();
+            g_wheel_binding[i].motor->TIM_Calculate_PeriodElapsedCallback();
         }
     }
 }
 
-void BalanceMotorIf_AliveAllPeriodic()
+void BalanceMotorIf_AliveAllPeriodic(void)
 {
     for (uint8_t i = 0; i < BALANCE_JOINT_NUM; ++i)
     {
