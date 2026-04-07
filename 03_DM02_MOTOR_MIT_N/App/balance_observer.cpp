@@ -26,7 +26,7 @@ namespace
     {
         return sign * (continuous - cont_ref) + phi_ref;
     }
-
+    
     static inline float BalanceWrapPi(float angle)
     {
         while (angle > M_PI)  angle -= 2.0f * M_PI;
@@ -176,11 +176,9 @@ void BalanceObserver_Init(BalanceRobot* robot)
     robot->body.x_dot_obv = 0.0f;                               // 观测速
     robot->body.x_acc_obv = 0.0f;                               // 观测加速度
 
-    // 重置轮子位移参考零点
-    BalanceWheelPosRefReset();
+    BalanceWheelPosRefReset();                                  // 重置轮子位移参考零点
 
-    // 重置启动姿态参考
-    BalanceJointStartRefReset();
+    BalanceJointStartRefReset();                                // 重置启动姿态参考
 
     // 初始化每个电机的角度解包器
     for (int i = 0; i < BALANCE_JOINT_NUM; ++i)
@@ -209,7 +207,7 @@ void BalanceObserver_UpdateBody(BalanceRobot* robot)
     }
 
     // 直接从统一 IMU 结构取数据
-    robot->body.roll = robot->imu.roll;
+    robot->body.roll = robot->imu.roll;                                         // 机体滚转角
     robot->body.pitch = robot->imu.pitch;
     robot->body.yaw = robot->imu.yaw;
 
@@ -218,11 +216,11 @@ void BalanceObserver_UpdateBody(BalanceRobot* robot)
     robot->body.yaw_dot = robot->imu.yaw_dot;
 
     // 平衡主平面暂用 pitch
-    robot->body.phi = BalanceWrapPi(robot->body.pitch);
-    robot->body.phi_dot = robot->body.pitch_dot;
+    robot->body.phi = BalanceWrapPi(robot->body.pitch);                         // 机体俯仰角
+    robot->body.phi_dot = robot->body.pitch_dot;                                // 机体俯仰角速度
 
     // 线加速度简单取 IMU x 方向
-    robot->body.x_acc = robot->imu.ax;
+    robot->body.x_acc = robot->imu.ax;                                          // 机体前向加速度
 }
 
 void BalanceObserver_UpdateLeg(BalanceRobot* robot)
@@ -272,7 +270,9 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.l0 = l0_phi0[0];                                                // 虚拟腿长
         leg.rod.phi0 = l0_phi0[1];                                              // 虚拟腿角度
-        leg.rod.theta = M_PI_2 - leg.rod.phi0 - robot->body.phi;                // 虚拟腿角度 - 机体仰角
+        // leg.rod.theta = M_PI_2 - leg.rod.phi0 - robot->body.phi;                // 虚拟腿角度 - 机体仰角
+        
+        leg.rod.theta = BalanceWrapPi(robot->body.phi + leg.rod.phi0 + M_PI_2);
 
         float J[2][2] = {{0.0f, 0.0f}, {0.0f, 0.0f}};
         BalanceCalcJacobian(leg.joint.phi1, leg.joint.phi4, J);                 // 计算雅可比矩阵
@@ -282,7 +282,9 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.dl0 = d_l0_d_phi0[0];                                           // 虚拟腿长变化率
         leg.rod.dphi0 = d_l0_d_phi0[1];                                         // 虚拟腿角速度
-        leg.rod.dtheta = -leg.rod.dphi0 - robot->body.phi_dot;                  // 虚拟腿角速度 - 机体角速度
+        // leg.rod.dtheta = -leg.rod.dphi0 - robot->body.phi_dot;                  // 虚拟腿角速度 - 机体角速度
+        
+        leg.rod.dtheta = robot->body.phi_dot + leg.rod.dphi0;
 
         // 第一版先固定不做离地判定
         leg.is_take_off = false;
@@ -333,7 +335,9 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.l0 = l0_phi0[0];
         leg.rod.phi0 = l0_phi0[1];
-        leg.rod.theta = M_PI_2 - leg.rod.phi0 - robot->body.phi;
+        // leg.rod.theta = M_PI_2 - leg.rod.phi0 - robot->body.phi;
+        
+        leg.rod.theta = BalanceWrapPi(robot->body.phi + leg.rod.phi0 + M_PI_2);
 
         float J[2][2] = {{0.0f, 0.0f}, {0.0f, 0.0f}};
         BalanceCalcJacobian(leg.joint.phi1, leg.joint.phi4, J);
@@ -343,7 +347,9 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.dl0 = d_l0_d_phi0[0];
         leg.rod.dphi0 = d_l0_d_phi0[1];
-        leg.rod.dtheta = -leg.rod.dphi0 - robot->body.phi_dot;
+        // leg.rod.dtheta = -leg.rod.dphi0 - robot->body.phi_dot;
+        
+        leg.rod.dtheta = robot->body.phi_dot + leg.rod.dphi0;
 
         // 第一版先固定不做离地判定
         leg.is_take_off = false;
@@ -421,7 +427,7 @@ void BalanceObserver_UpdateLqrState(BalanceRobot* robot)
         robot->leg_state[i].theta     = robot->leg[i].rod.theta;
         robot->leg_state[i].theta_dot = robot->leg[i].rod.dtheta;
         robot->leg_state[i].x         = robot->body.x;
-        robot->leg_state[i].x_dot     = robot->body.x_dot_obv;
+        robot->leg_state[i].x_dot     = robot->body.x_dot;
         robot->leg_state[i].phi       = robot->body.phi;
         robot->leg_state[i].phi_dot   = robot->body.phi_dot;
     }

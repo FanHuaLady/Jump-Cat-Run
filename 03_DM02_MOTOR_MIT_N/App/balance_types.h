@@ -114,10 +114,12 @@ typedef struct BalanceLegLqrState
 // 参考值
 typedef struct BalanceRefState
 {
-    float target_leg_length[2];
-    float target_vx;
-    float target_wz;
-    float target_roll;
+    float target_leg_length[2];                 // 每条腿的目标腿长
+    float target_leg_angle[2];                  // 每条腿的目标虚拟腿角 phi0
+
+    float target_vx;                            // 预留：目标前向速度
+    float target_wz;                            // 预留：目标转向角速度
+    float target_roll;                          // 预留：目标横滚角
 } BalanceRefState;
 
 // 单腿控制输出

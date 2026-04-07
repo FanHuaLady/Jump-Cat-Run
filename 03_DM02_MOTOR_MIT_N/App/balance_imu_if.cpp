@@ -23,6 +23,7 @@ namespace
 
 void BalanceImuIf_Init(void)
 {
+    BSP_JY61P.Init(&huart10);
     g_balance_imu_if_inited = true;
 }
 

@@ -16,6 +16,8 @@
 #include "dvc_motor_dm.h"
 #include "dvc_motor_dji.h"
 #include "drv_can.h"
+
+#include "bsp_power.h"
 #include "bsp_jy61p.h"
 
 // =====================================================
@@ -227,7 +229,8 @@ void BalanceApp_Init(void)
     {
         return;
     }
-
+    
+    BSP_Power.Init(false, false, true);
     BalanceApp_InitRobot();
     BalanceApp_InitImu();
     BalanceApp_InitMotors();
@@ -281,16 +284,17 @@ static void vBalanceControlTask(void *pvParameters)
 
     for (;;)
     {
-        BalanceMotorIf_UpdateFeedback(&g_balance_robot);                        // 更新电机反馈
-        BalanceImuIf_Update(&g_balance_robot.imu);                              // 更新IMU数据
-        BalanceObserver_UpdateAll(&g_balance_robot);                            // 更新观察器，计算出身体状态和腿状态等
+        BalanceMotorIf_UpdateFeedback(&g_balance_robot);
+        BalanceImuIf_Update(&g_balance_robot.imu);
+        BalanceObserver_UpdateAll(&g_balance_robot);
 
         if (g_balance_robot.enable && !g_balance_robot.safe)
         {
-            BalanceController_SetRef(&g_balance_robot);                         // 设置控制器参考值
+            BalanceController_SetRef(&g_balance_robot);                         // 设置参考值
             BalanceController_LegLength(&g_balance_robot);                      // 腿长控制 -> rod_f
-            BalanceController_LegAngle(&g_balance_robot);                       // 腿角控制 -> rod_tp
-            BalanceController_Output(&g_balance_robot);                         // 输出最终电机命令
+            BalanceController_LegAngle(&g_balance_robot);                       // 虚拟腿角控制 -> rod_tp
+            BalanceController_LqrBalance(&g_balance_robot);                     // LQR -> wheel_t + rod_tp
+            BalanceController_Output(&g_balance_robot);                         // 输出电机命令
         }
         else
         {
@@ -346,31 +350,43 @@ static void vBalancePrintTask(void *pvParameters)
 
     for (;;)
     {
-        const float l0_l = g_balance_robot.leg[0].rod.l0;
-        const float l0_r = g_balance_robot.leg[1].rod.l0;
+        const float phi_deg =
+            BalanceTool_RadToDeg(g_balance_robot.body.phi);                                 // 机体俯仰角
+        const float phi_dot_dps =
+            BalanceTool_RadToDeg(g_balance_robot.body.phi_dot);                             // 机体俯仰角速度
 
-        const float phi0_l = g_balance_robot.leg[0].rod.phi0;
-        const float phi0_r = g_balance_robot.leg[1].rod.phi0;
+        const float theta_r_deg =
+            BalanceTool_RadToDeg(g_balance_robot.leg_state[1].theta);                       // 右腿虚拟腿角
+        const float theta_dot_r_dps =
+            BalanceTool_RadToDeg(g_balance_robot.leg_state[1].theta_dot);                   // 右腿虚拟腿角速度
 
-        const float q0_l = g_balance_robot.leg[0].joint.phi1;
-        const float q1_l = g_balance_robot.leg[0].joint.phi4;
+        const float wheel_cmd_r = g_balance_robot.cmd[1].wheel_t;                           // 右轮命令力矩
 
-        BalanceTool_PrintRaw("\r\n[balance]\r\n");
+        const float wheel_out_r = g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].tor;         // 右轮实际输出力矩
 
-        BalanceTool_PrintFloat4Line("l0_l",
-                                    l0_l,
-                                    "l0_r",
-                                    l0_r);
+        const float wheel_vel_r = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_R].vel;         // 右轮速度
 
-        BalanceTool_PrintFloat4Line("phi0_l",
-                                    phi0_l,
-                                    "phi0_r",
-                                    phi0_r);
+        BalanceTool_PrintRaw("\r\n[balance_test]\r\n");
 
-        BalanceTool_PrintFloat4Line("q0_l",
-                                    q0_l,
-                                    "q1_l",
-                                    q1_l);
+        BalanceTool_PrintFloat4Line("phi_deg",
+                                    phi_deg,
+                                    "phi_dps",
+                                    phi_dot_dps);
+
+        BalanceTool_PrintFloat4Line("th_r_deg",
+                                    theta_r_deg,
+                                    "dth_r_dps",
+                                    theta_dot_r_dps);
+
+        BalanceTool_PrintFloat4Line("cmd_wr",
+                                    wheel_cmd_r,
+                                    "out_wr",
+                                    wheel_out_r);
+
+        BalanceTool_PrintFloat4Line("vel_wr",
+                                    wheel_vel_r,
+                                    "safe",
+                                    g_balance_robot.safe ? 1.0f : 0.0f);
 
         vTaskDelay(pdMS_TO_TICKS(50));
     }
