@@ -270,9 +270,8 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.l0 = l0_phi0[0];                                                // 虚拟腿长
         leg.rod.phi0 = l0_phi0[1];                                              // 虚拟腿角度
-        // leg.rod.theta = M_PI_2 - leg.rod.phi0 - robot->body.phi;                // 虚拟腿角度 - 机体仰角
         
-        leg.rod.theta = BalanceWrapPi(robot->body.phi + leg.rod.phi0 + M_PI_2);
+        leg.rod.theta  = BalanceWrapPi(-robot->body.phi - leg.rod.phi0 - M_PI_2);
 
         float J[2][2] = {{0.0f, 0.0f}, {0.0f, 0.0f}};
         BalanceCalcJacobian(leg.joint.phi1, leg.joint.phi4, J);                 // 计算雅可比矩阵
@@ -282,9 +281,8 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.dl0 = d_l0_d_phi0[0];                                           // 虚拟腿长变化率
         leg.rod.dphi0 = d_l0_d_phi0[1];                                         // 虚拟腿角速度
-        // leg.rod.dtheta = -leg.rod.dphi0 - robot->body.phi_dot;                  // 虚拟腿角速度 - 机体角速度
         
-        leg.rod.dtheta = robot->body.phi_dot + leg.rod.dphi0;
+        leg.rod.dtheta = -robot->body.phi_dot - leg.rod.dphi0;
 
         // 第一版先固定不做离地判定
         leg.is_take_off = false;
@@ -335,9 +333,8 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.l0 = l0_phi0[0];
         leg.rod.phi0 = l0_phi0[1];
-        // leg.rod.theta = M_PI_2 - leg.rod.phi0 - robot->body.phi;
         
-        leg.rod.theta = BalanceWrapPi(robot->body.phi + leg.rod.phi0 + M_PI_2);
+        leg.rod.theta  = BalanceWrapPi(-robot->body.phi - leg.rod.phi0 - M_PI_2);
 
         float J[2][2] = {{0.0f, 0.0f}, {0.0f, 0.0f}};
         BalanceCalcJacobian(leg.joint.phi1, leg.joint.phi4, J);
@@ -347,9 +344,8 @@ void BalanceObserver_UpdateLeg(BalanceRobot* robot)
 
         leg.rod.dl0 = d_l0_d_phi0[0];
         leg.rod.dphi0 = d_l0_d_phi0[1];
-        // leg.rod.dtheta = -leg.rod.dphi0 - robot->body.phi_dot;
         
-        leg.rod.dtheta = robot->body.phi_dot + leg.rod.dphi0;
+        leg.rod.dtheta = -robot->body.phi_dot - leg.rod.dphi0;
 
         // 第一版先固定不做离地判定
         leg.is_take_off = false;

@@ -36,8 +36,8 @@ namespace
     // =========================
     static constexpr float k_lqr_K[2][6] =
     {
-        { -45.1154f, -10.0791f, -22.3582f, -21.3791f,   8.5821f,  2.0711f },
-        {   1.3810f,   0.0565f,   0.6606f,   0.3990f, 142.2474f,  2.5911f }
+        { -82.0714f, -11.5743f, -0.2701f, -0.4922f, -134.2395f, -15.1839f },
+        {  73.3496f,   9.4385f,  1.9724f,  2.3286f,  137.6689f,  16.7321f }
     };
 
     static inline float BalanceClamp(float x, float min_v, float max_v)
@@ -125,7 +125,7 @@ void BalanceController_SetRef(BalanceRobot* robot)
     // 默认虚拟腿角
     // 这里先沿用你之前写死的参考角
     robot->ref.target_leg_angle[0] = -1.5708f;
-    robot->ref.target_leg_angle[1] = -1.5708f;
+    robot->ref.target_leg_angle[1] = -1.39626f;
 
     // 这些目前先保留为 0，后面如果你要做速度跟踪/转向/横滚控制再接进去
     robot->ref.target_vx = 0.0f;
@@ -181,7 +181,6 @@ void BalanceController_LegAngle(BalanceRobot* robot)
                                BALANCE_DEFAULT_JOINT_TORQUE_LIMIT);
 
         robot->cmd[i].rod_tp = rod_tp;
-        robot->cmd[i].wheel_t = 0.0f;
     }
 }
 
@@ -205,7 +204,7 @@ void BalanceController_LqrBalance(BalanceRobot* robot)
     const float phi_dot = robot->body.phi_dot;
 
     float wheel_t =
-        -(k_lqr_K[0][0] * theta +
+        (k_lqr_K[0][0] * theta +
           k_lqr_K[0][1] * theta_dot +
           k_lqr_K[0][2] * x +
           k_lqr_K[0][3] * x_dot +
@@ -213,7 +212,7 @@ void BalanceController_LqrBalance(BalanceRobot* robot)
           k_lqr_K[0][5] * phi_dot);
 
     float rod_tp =
-        -(k_lqr_K[1][0] * theta +
+        (k_lqr_K[1][0] * theta +
           k_lqr_K[1][1] * theta_dot +
           k_lqr_K[1][2] * x +
           k_lqr_K[1][3] * x_dot +
@@ -224,14 +223,14 @@ void BalanceController_LqrBalance(BalanceRobot* robot)
                            -BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT,
                             BALANCE_DEFAULT_WHEEL_TORQUE_LIMIT);
 
-    // rod_tp = BalanceClamp(rod_tp,
-    //                       -BALANCE_DEFAULT_JOINT_TORQUE_LIMIT,
-    //                        BALANCE_DEFAULT_JOINT_TORQUE_LIMIT);
+    rod_tp = BalanceClamp(rod_tp,
+                          -BALANCE_DEFAULT_JOINT_TORQUE_LIMIT,
+                           BALANCE_DEFAULT_JOINT_TORQUE_LIMIT);
 
     for (int i = 0; i < BALANCE_LEG_NUM; ++i)
     {
         robot->cmd[i].wheel_t = wheel_t;
-        // robot->cmd[i].rod_tp  = rod_tp;
+        robot->cmd[i].rod_tp  = rod_tp;
     }
 }
 
