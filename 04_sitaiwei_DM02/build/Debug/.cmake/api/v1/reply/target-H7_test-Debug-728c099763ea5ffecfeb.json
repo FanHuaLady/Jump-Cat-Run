@@ -703,7 +703,8 @@
 				70,
 				71,
 				72,
-				73
+				73,
+				74
 			]
 		},
 		{
@@ -1107,7 +1108,8 @@
 				70,
 				71,
 				72,
-				73
+				73,
+				74
 			]
 		},
 		{
@@ -1121,7 +1123,6 @@
 			"name" : "Object Libraries",
 			"sourceIndexes" : 
 			[
-				74,
 				75,
 				76,
 				77,
@@ -1166,7 +1167,8 @@
 				116,
 				117,
 				118,
-				119
+				119,
+				120
 			]
 		}
 	],
@@ -1548,6 +1550,12 @@
 			"backtrace" : 7,
 			"compileGroupIndex" : 1,
 			"path" : "User_File/4_Task/balance_test_task.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 1,
+			"path" : "User_File/4_Task/bmi088_test.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

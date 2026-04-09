@@ -232,7 +232,7 @@ void BalanceApp_Init(void)
     
     BSP_Power.Init(false, false, true);
     BalanceApp_InitRobot();
-    BalanceApp_InitImu();
+    // BalanceApp_InitImu();
     BalanceApp_InitMotors();
 
     g_balance_app_inited = true;
@@ -368,8 +368,6 @@ static void vBalancePrintTask(void *pvParameters)
         const float wheel_out_r = g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].tor;         // 右轮实际输出力矩
 
         const float wheel_vel_r = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_R].vel;         // 右轮速度
-
-        BalanceTool_PrintRaw("\r\n[balance_test]\r\n");
 
         BalanceTool_PrintFloat4Line("phi_deg",
                                     phi_deg,

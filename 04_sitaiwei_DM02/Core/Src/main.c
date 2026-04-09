@@ -32,6 +32,8 @@
 #include "usb_device.h"
 #include "gpio.h"
 
+#include "bmi088_test.h"
+
 #include <stdbool.h>
 
 bool init_finished = false;
@@ -144,6 +146,8 @@ int main(void)
   MX_OCTOSPI2_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+  
+  /*
   SysTimestamp_Init(&htim5);                                      // 初始化时间戳
   HAL_TIM_Base_Start_IT(&htim4);
   HAL_TIM_Base_Start_IT(&htim5);
@@ -154,8 +158,12 @@ int main(void)
   
   WS2812_Task_Create();
   BalanceApp_Task_Create();
+  */
+  Bmi088_test();
+  WS2812_Task_Create();
+  BalanceApp_Task_Create();
   /* USER CODE END 2 */
-
+  
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
@@ -176,6 +184,8 @@ int main(void)
   }
   /* USER CODE END 3 */
 }
+
+/*
 
 void Task3600s_Callback()
 {
@@ -211,7 +221,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         BalanceBmi088Service_Timer125usCallback();
     }
 }
-
+*/
 /**
   * @brief System Clock Configuration
   * @retval None

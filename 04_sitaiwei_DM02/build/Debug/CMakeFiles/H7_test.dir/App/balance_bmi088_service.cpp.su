@@ -1,7 +1,9 @@
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:9:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:22:6:void SPI2_Callback(uint8_t*, uint8_t*, uint16_t, uint16_t)	24	static
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:38:6:void Task3600s_Callback()	8	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:12:28:void BalanceBmi088Service_Timer1msUserCallback()	4	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:16:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:29:6:void SPI2_Callback(uint8_t*, uint8_t*, uint16_t, uint16_t)	24	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:45:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	16	static
 E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:76:6:void BalanceBmi088Service_Timer10usCallback()	8	static
 E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:86:6:void BalanceBmi088Service_Timer125usCallback()	8	static
 E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:96:6:void BalanceBmi088Service_Timer128msCallback()	8	static
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:106:6:void BalanceBmi088Service_Init()	8	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:106:6:void BalanceBmi088Service_Timer3600sCallback()	8	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_bmi088_service.cpp:116:6:void BalanceBmi088Service_Init()	8	static

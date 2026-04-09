@@ -12,6 +12,7 @@ void BalanceBmi088Service_Init(void);
 void BalanceBmi088Service_Timer10usCallback(void);
 void BalanceBmi088Service_Timer125usCallback(void);
 void BalanceBmi088Service_Timer128msCallback(void);
+void BalanceBmi088Service_Timer3600sCallback(void);
 
 #ifdef __cplusplus
 }
