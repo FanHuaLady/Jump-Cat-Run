@@ -31,7 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "tsk_config_and_callback.h"
 
 /* USER CODE END Includes */
 

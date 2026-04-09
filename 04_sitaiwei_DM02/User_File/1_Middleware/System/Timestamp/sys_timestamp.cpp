@@ -17,6 +17,7 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "sys_timestamp.h"
+#include "sys_timestamp_c.h"
 
 /* Private macros ------------------------------------------------------------*/
 
@@ -25,6 +26,16 @@
 /* Private variables ---------------------------------------------------------*/
 
 Class_Timestamp SYS_Timestamp;
+
+extern "C" void SysTimestamp_Init(TIM_HandleTypeDef *htim)
+{
+    SYS_Timestamp.Init(htim);
+}
+
+extern "C" void SysTimestamp_TIM_3600s_PeriodElapsedCallback(void)
+{
+    SYS_Timestamp.TIM_3600s_PeriodElapsedCallback();
+}
 
 /* Private function declarations ---------------------------------------------*/
 

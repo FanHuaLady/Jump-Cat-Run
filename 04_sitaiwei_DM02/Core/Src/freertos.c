@@ -22,7 +22,6 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
-#include "tsk_config_and_callback.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -229,12 +228,9 @@ void Start_ctrl_task(void *argument)
 {
   /* USER CODE BEGIN Start_ctrl_task */
   /* 使用 osDelayUntil 保证严格 1ms 周期, 不受任务体执行时间漂移 */
-  uint32_t tick = osKernelGetTickCount();
   for(;;)
   {
-    tick += 1U;
-    osDelayUntil(tick);
-    RTOS_Ctrl_Task_Loop();
+    osDelay(1000);
   }
   /* USER CODE END Start_ctrl_task */
 }
@@ -249,12 +245,9 @@ void Start_ctrl_task(void *argument)
 void Start_remote_task(void *argument)
 {
   /* USER CODE BEGIN Start_remote_task */
-  uint32_t tick = osKernelGetTickCount();
   for(;;)
   {
-    tick += 20U;
-    osDelayUntil(tick);
-    RTOS_Remote_Task_Loop();
+    osDelay(1000);
   }
   /* USER CODE END Start_remote_task */
 }
@@ -270,12 +263,9 @@ void Start_monitor_task(void *argument)
 {
   /* USER CODE BEGIN Start_monitor_task */
   /* 低优先级监控任务: 每20ms发送一帧 VOFA+ 四电机状态 */
-  uint32_t tick = osKernelGetTickCount();
   for(;;)
   {
-    tick += 20U;
-    osDelayUntil(tick);
-    RTOS_Monitor_Task_Loop();
+    osDelay(1000);
   }
   /* USER CODE END Start_monitor_task */
 }

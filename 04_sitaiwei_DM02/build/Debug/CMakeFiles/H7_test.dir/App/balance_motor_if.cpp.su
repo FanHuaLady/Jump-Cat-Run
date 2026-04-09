@@ -1,0 +1,32 @@
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:503:29:Enum_Motor_DM_Status Class_Motor_DM_Normal::Get_Status() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:523:14:float Class_Motor_DM_Normal::Get_Now_Angle() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:533:14:float Class_Motor_DM_Normal::Get_Now_Omega() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:543:14:float Class_Motor_DM_Normal::Get_Now_Torque() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:643:13:void Class_Motor_DM_Normal::Set_Control_Angle(const float&)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:653:13:void Class_Motor_DM_Normal::Set_Control_Omega(const float&)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:663:13:void Class_Motor_DM_Normal::Set_Control_Torque(const float&)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:683:13:void Class_Motor_DM_Normal::Set_K_P(const float&)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DM/dvc_motor_dm.h:693:13:void Class_Motor_DM_Normal::Set_K_D(const float&)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DJI/dvc_motor_dji.h:859:30:Enum_Motor_DJI_Status Class_Motor_DJI_C620::Get_Status() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DJI/dvc_motor_dji.h:869:14:float Class_Motor_DJI_C620::Get_Now_Angle() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DJI/dvc_motor_dji.h:879:14:float Class_Motor_DJI_C620::Get_Now_Omega() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DJI/dvc_motor_dji.h:889:14:float Class_Motor_DJI_C620::Get_Now_Torque() const	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/User_File/2_Device/Motor/Motor_DJI/dvc_motor_dji.h:1009:13:void Class_Motor_DJI_C620::Set_Target_Torque(const float&)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:10:25:float {anonymous}::BalanceClamp(float, float, float)	24	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:21:24:bool {anonymous}::BalanceJointMotorOnline(const BalanceDmMotor*)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:31:24:void {anonymous}::BalanceFillFdbFromDm(BalanceMotorFdb*, const BalanceDmMotor*)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:54:24:void {anonymous}::BalanceApplyCmdToDm(BalanceDmMotor*, const BalanceMotorCmd*, float, float, float)	72	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:93:24:bool {anonymous}::BalanceWheelMotorOnline(const BalanceDjiWheelMotor*)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:103:24:void {anonymous}::BalanceFillFdbFromDji(BalanceMotorFdb*, const BalanceDjiWheelMotor*)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:126:24:void {anonymous}::BalanceApplyCmdToDji(BalanceDjiWheelMotor*, const BalanceMotorCmd*, float)	32	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:144:24:void {anonymous}::BalanceClearFdb(BalanceMotorFdb*)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:158:6:void BalanceMotorIf_Init()	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:173:6:bool BalanceMotorIf_RegisterJoint(uint8_t, BalanceDmMotor*)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:190:6:bool BalanceMotorIf_RegisterWheel(uint8_t, BalanceDjiWheelMotor*)	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:207:6:void BalanceMotorIf_UpdateFeedback(BalanceRobot*)	24	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:241:6:void BalanceMotorIf_SendCommand(const BalanceRobot*)	24	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:277:6:void BalanceMotorIf_DisableAll()	40	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:306:6:void BalanceMotorIf_SendExitAll()	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:327:6:void BalanceMotorIf_SendEnterAll()	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:342:6:void BalanceMotorIf_TxAllPeriodic()	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_motor_if.cpp:361:6:void BalanceMotorIf_AliveAllPeriodic()	16	static

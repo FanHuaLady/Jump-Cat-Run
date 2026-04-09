@@ -1,0 +1,8 @@
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:114:6:vApplicationIdleHook	4	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:129:6:vApplicationStackOverflowHook	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:138:6:vApplicationMallocFailedHook	4	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:158:6:MX_FREERTOS_Init	8	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:209:6:StartDefaultTask	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:227:6:Start_ctrl_task	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:245:6:Start_remote_task	16	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/Core/Src/freertos.c:262:6:Start_monitor_task	16	static
