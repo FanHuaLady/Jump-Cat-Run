@@ -3,7 +3,14 @@
 #include <math.h>
 #include <stddef.h>
 
+#if BALANCE_IMU_BACKEND_JY61P
 #include "bsp_jy61p.h"
+#endif
+
+#if BALANCE_IMU_BACKEND_BMI088
+#include "balance_bmi088_service.h"
+#include "bsp_bmi088.h"
+#endif
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846f
@@ -23,7 +30,14 @@ namespace
 
 void BalanceImuIf_Init(void)
 {
+#if BALANCE_IMU_BACKEND_JY61P
     BSP_JY61P.Init(&huart10);
+#endif
+
+#if BALANCE_IMU_BACKEND_BMI088
+    BalanceBmi088Service_Init();
+#endif
+
     g_balance_imu_if_inited = true;
 }
 
@@ -39,10 +53,11 @@ void BalanceImuIf_Update(BalanceImuData* imu)
         BalanceImuIf_Init();
     }
 
-    // JY61P原始接口：
-    // 角度     -> 度
-    // 角速度   -> 度/秒
-    // 加速度   -> 在bsp_jy61p.cpp里已换算成 m/s^2
+#if BALANCE_IMU_BACKEND_JY61P
+    // JY61P:
+    // angle -> deg
+    // gyro  -> deg/s
+    // accel -> m/s^2
 
     imu->roll  = DegToRad(BSP_JY61P.GetRoll());
     imu->pitch = DegToRad(BSP_JY61P.GetPitch());
@@ -56,7 +71,30 @@ void BalanceImuIf_Update(BalanceImuData* imu)
     imu->ay = BSP_JY61P.GetAccelY();
     imu->az = BSP_JY61P.GetAccelZ();
 
-    // 先简单认为在线
-    // 后面如果你想更严谨，可以加 UART 超时判断
     imu->online = true;
+#endif
+
+#if BALANCE_IMU_BACKEND_BMI088
+    // BMI088:
+    // Euler angle order in BSP_BMI088 is Yaw-Pitch-Roll
+    // Gyro_Body / Accel_Body are body-frame values
+
+    auto euler = BSP_BMI088.Get_Euler_Angle();
+    auto gyro  = BSP_BMI088.Get_Gyro_Body();
+    auto accel = BSP_BMI088.Get_Accel_Body();
+
+    imu->roll  = euler[2][0];
+    imu->pitch = euler[1][0];
+    imu->yaw   = euler[0][0];
+
+    imu->roll_dot  = gyro[0][0];
+    imu->pitch_dot = gyro[1][0];
+    imu->yaw_dot   = gyro[2][0];
+
+    imu->ax = accel[0][0];
+    imu->ay = accel[1][0];
+    imu->az = accel[2][0];
+
+    imu->online = true;
+#endif
 }
