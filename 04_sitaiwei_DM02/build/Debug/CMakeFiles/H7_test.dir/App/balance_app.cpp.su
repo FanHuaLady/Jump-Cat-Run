@@ -12,7 +12,7 @@ E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:258:6:void Bal
 E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:272:13:void vBalanceControlTask(void*)	16	static
 E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:311:13:void vBalanceMotorSendTask(void*)	16	static
 E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:329:13:void vBalanceAliveTask(void*)	16	static
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:345:13:void vBalancePrintTask(void*)	56	static
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:404:6:void BalanceApp_Task_Create()	24	static
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:456:1:void __static_initialization_and_destruction_0()	8	static
-E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:456:1:cpp)	8	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:345:13:void vBalancePrintTask(void*)	32	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:376:6:void BalanceApp_Task_Create()	24	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:428:1:void __static_initialization_and_destruction_0()	8	static
+E:/02_github/19_Jump-Cat-Run/04_sitaiwei_DM02/App/balance_app.cpp:428:1:cpp)	8	static

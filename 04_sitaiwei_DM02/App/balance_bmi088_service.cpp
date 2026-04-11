@@ -9,10 +9,6 @@ namespace
     static uint16_t g_tim7_divider = 0;
 }
 
-void __attribute__((weak)) BalanceBmi088Service_Timer1msUserCallback(void)
-{
-}
-
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if (!g_bmi088_inited)
@@ -59,7 +55,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
     else if (htim->Instance == TIM7)
     {
-        // BalanceBmi088Service_Timer1msUserCallback();
         g_tim7_divider++;
         if (g_tim7_divider >= 128)
         {
