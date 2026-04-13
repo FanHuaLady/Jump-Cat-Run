@@ -159,7 +159,7 @@ int main(void)
   WS2812_Task_Create();
   BalanceApp_Task_Create();
   */
-  Bmi088_test();
+  // Bmi088_test();
   WS2812_Task_Create();
   BalanceApp_Task_Create();
   /* USER CODE END 2 */

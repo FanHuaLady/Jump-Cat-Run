@@ -232,7 +232,7 @@ void BalanceApp_Init(void)
     
     BSP_Power.Init(false, false, true);
     BalanceApp_InitRobot();
-    // BalanceApp_InitImu();
+    BalanceApp_InitImu();
     BalanceApp_InitMotors();
 
     g_balance_app_inited = true;
@@ -292,8 +292,8 @@ static void vBalanceControlTask(void *pvParameters)
         {
             BalanceController_SetRef(&g_balance_robot);                         // 设置参考值
             BalanceController_LegLength(&g_balance_robot);                      // 腿长控制 -> rod_f
-            // BalanceController_LegAngle(&g_balance_robot);                       // 虚拟腿角控制 -> rod_tp
-            BalanceController_LqrBalance(&g_balance_robot);                     // LQR -> wheel_t + rod_tp
+            BalanceController_LegAngle(&g_balance_robot);                       // 虚拟腿角控制 -> rod_tp
+            // BalanceController_LqrBalance(&g_balance_robot);                     // LQR -> wheel_t + rod_tp
             BalanceController_Output(&g_balance_robot);                         // 输出电机命令
         }
         else

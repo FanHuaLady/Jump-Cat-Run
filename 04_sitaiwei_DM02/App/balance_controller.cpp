@@ -124,8 +124,9 @@ void BalanceController_SetRef(BalanceRobot* robot)
 
     // 默认虚拟腿角
     // 这里先沿用你之前写死的参考角
+    // robot->ref.target_leg_angle[0] = -1.5708f;
     robot->ref.target_leg_angle[0] = -1.5708f;
-    robot->ref.target_leg_angle[1] = -1.39626f;
+    robot->ref.target_leg_angle[1] = -1.5708f;
 
     // 这些目前先保留为 0，后面如果你要做速度跟踪/转向/横滚控制再接进去
     robot->ref.target_vx = 0.0f;
