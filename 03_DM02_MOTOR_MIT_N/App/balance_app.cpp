@@ -292,8 +292,8 @@ static void vBalanceControlTask(void *pvParameters)
         {
             BalanceController_SetRef(&g_balance_robot);                         // 设置参考值
             BalanceController_LegLength(&g_balance_robot);                      // 腿长控制 -> rod_f
-            // BalanceController_LegAngle(&g_balance_robot);                       // 虚拟腿角控制 -> rod_tp
-            BalanceController_LqrBalance(&g_balance_robot);                     // LQR -> wheel_t + rod_tp
+            BalanceController_LegAngle(&g_balance_robot);                       // 虚拟腿角控制 -> rod_tp
+            // BalanceController_LqrBalance(&g_balance_robot);                     // LQR -> wheel_t + rod_tp
             BalanceController_Output(&g_balance_robot);                         // 输出电机命令
         }
         else
@@ -350,51 +350,23 @@ static void vBalancePrintTask(void *pvParameters)
 
     for (;;)
     {
-        const float phi_deg =
-            BalanceTool_RadToDeg(g_balance_robot.body.phi);                                 // 机体俯仰角
-        const float phi_dot_dps =
-            BalanceTool_RadToDeg(g_balance_robot.body.phi_dot);                             // 机体俯仰角速度
-
-        const float theta_r_deg =
-            BalanceTool_RadToDeg(g_balance_robot.leg_state[1].theta);                       // 右腿虚拟腿角
-        const float theta_dot_r_dps =
-            BalanceTool_RadToDeg(g_balance_robot.leg_state[1].theta_dot);                   // 右腿虚拟腿角速度
+        const float theta_l = g_balance_robot.leg_state[0].theta;                       // 右腿虚拟腿角
+        const float theta_r = g_balance_robot.leg_state[1].theta;                   // 右腿虚拟腿角速度
         
-        const float rod_f = g_balance_robot.cmd[1].rod_f;
-        const float rod_tp = g_balance_robot.cmd[1].rod_tp;
-        
-        const float wheel_cmd_r = g_balance_robot.cmd[1].wheel_t;                           // 右轮命令力矩
-
-        const float wheel_out_r = g_balance_robot.wheel_motor_cmd[BAL_WHEEL_R].tor;         // 右轮实际输出力矩
-
-        const float wheel_vel_r = g_balance_robot.wheel_motor_fdb[BAL_WHEEL_R].vel;         // 右轮速度
+        const float rod_l = g_balance_robot.cmd[0].rod_tp;
+        const float rod_r = g_balance_robot.cmd[1].rod_tp;
 
         BalanceTool_PrintRaw("\r\n[balance_test]\r\n");
 
-        BalanceTool_PrintFloat4Line("phi_deg",
-                                    phi_deg,
-                                    "phi_dps",
-                                    phi_dot_dps);
-
-        BalanceTool_PrintFloat4Line("theta_r_deg",
-                                    theta_r_deg,
-                                    "theta_dot_r_dps",
-                                    theta_dot_r_dps);
+        BalanceTool_PrintFloat4Line("theta_l",
+                                    theta_l,
+                                    "theta_r",
+                                    theta_r);
         
-        BalanceTool_PrintFloat4Line("rod_f",
-                                    rod_f,
-                                    "rod_tp",
-                                    rod_tp);                                    
-                                    
-        BalanceTool_PrintFloat4Line("wheel_cmd_r",
-                                    wheel_cmd_r,
-                                    "wheel_out_r",
-                                    wheel_out_r);
-
-        BalanceTool_PrintFloat4Line("wheel_vel_r",
-                                    wheel_vel_r,
-                                    "safe",
-                                    g_balance_robot.safe ? 1.0f : 0.0f);
+        BalanceTool_PrintFloat4Line("rod_l",
+                                    rod_l,
+                                    "rod_r",
+                                    rod_r);                                    
 
         vTaskDelay(pdMS_TO_TICKS(50));
     }
