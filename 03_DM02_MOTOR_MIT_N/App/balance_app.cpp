@@ -15,6 +15,7 @@
 #include "fdcan.h"
 #include "dvc_motor_dm.h"
 #include "dvc_motor_dji.h"
+#include "bsp_control.h"
 #include "drv_can.h"
 
 #include "bsp_power.h"
@@ -44,6 +45,7 @@ static Class_Motor_DJI_C620 g_motor_wheel_1;
 static TaskHandle_t xBalanceControlTaskHandle = NULL;
 static TaskHandle_t xBalanceMotorSendTaskHandle = NULL;
 static TaskHandle_t xBalanceAliveTaskHandle = NULL;
+static TaskHandle_t xBalanceRemoteTaskHandle = NULL;
 static TaskHandle_t xBalancePrintTaskHandle = NULL;
 
 // =====================================================
@@ -340,6 +342,20 @@ static void vBalanceAliveTask(void *pvParameters)
 }
 
 // =====================================================
+// 遥控器接收任务
+// =====================================================
+static void vBalanceRemoteTask(void *pvParameters)
+{
+    Control.Init(&huart5, 100);
+    
+    while (1)
+    {
+        Control.CheckOffline();
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
+// =====================================================
 // 打印任务
 // =====================================================
 static void vBalancePrintTask(void *pvParameters)
@@ -353,11 +369,37 @@ static void vBalancePrintTask(void *pvParameters)
         const float len_l = g_balance_robot.leg[0].rod.l0;                          // 左腿长度
         const float len_r = g_balance_robot.leg[1].rod.l0;                          // 右腿长度
         
+        const float theta_l = g_balance_robot.leg_state[0].theta;                   // 左腿虚拟腿角
+        const float theta_r = g_balance_robot.leg_state[1].theta;                   // 右腿虚拟腿角
+        
+        const float encoder = Control.GetDataCopy().rc.ch[4];                       // 遥控器通道 4
+        
+        BalanceTool_PrintRaw("\r\n[balance_test]\r\n");
+        
+        BalanceTool_PrintFloat4Line("len_l",
+                                    len_l,
+                                    "len_r",
+                                    len_r);
+        
+        BalanceTool_PrintFloat4Line("theta_l",
+                                    theta_l,
+                                    "theta_r",
+                                    theta_r);
+        
+        BalanceTool_PrintFloat4Line("encoder",
+                                    encoder,
+                                    "test",
+                                    1);
+                                    
+        /*
+        const float len_l = g_balance_robot.leg[0].rod.l0;                          // 左腿长度
+        const float len_r = g_balance_robot.leg[1].rod.l0;                          // 右腿长度
+        
         const float pitch = g_balance_robot.imu.pitch;                              // 俯仰角
         const float roll = g_balance_robot.imu.roll;                                // 
         
         const float theta_l = g_balance_robot.leg_state[0].theta;                   // 左腿虚拟腿角
-        const float theta_r = g_balance_robot.leg_state[1].theta;                   // 右腿虚拟腿角速度
+        const float theta_r = g_balance_robot.leg_state[1].theta;                   // 右腿虚拟腿角
         
         const float rod_l = g_balance_robot.cmd[0].rod_tp;
         const float rod_r = g_balance_robot.cmd[1].rod_tp;
@@ -390,7 +432,8 @@ static void vBalancePrintTask(void *pvParameters)
         BalanceTool_PrintFloat4Line("wheel_l",
                                     wheel_l,
                                     "wheel_r",
-                                    wheel_r);                    
+                                    wheel_r);            
+        */        
         
         /*
         const float rod_l = g_balance_robot.cmd[0].rod_tp;
@@ -450,7 +493,21 @@ void BalanceApp_Task_Create(void)
     {
         while (1) {}
     }
-
+    
+    ret = xTaskCreate(vBalanceRemoteTask,
+                                 "vBalanceRemoteTask",
+                                 256,
+                                 NULL,
+                                 2,
+                                 &xBalanceRemoteTaskHandle);
+    if (ret != pdPASS)
+    {
+        while (1)
+        {
+           
+        }
+    }
+    
     ret = xTaskCreate(vBalancePrintTask,
                       "vBalancePrintTask",
                       512,
