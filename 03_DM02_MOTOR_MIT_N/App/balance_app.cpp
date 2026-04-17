@@ -60,8 +60,8 @@ namespace
     // =========================
     // 轮子 DJI 参数
     // =========================
-    static constexpr Enum_Motor_DJI_ID kWheelLeftId  = Motor_DJI_ID_0x201;
-    static constexpr Enum_Motor_DJI_ID kWheelRightId = Motor_DJI_ID_0x202;
+    static constexpr Enum_Motor_DJI_ID kWheelLeftId  = Motor_DJI_ID_0x202;
+    static constexpr Enum_Motor_DJI_ID kWheelRightId = Motor_DJI_ID_0x201;
 
     // 3508 常见减速比 19:1
     static constexpr float kWheelGearRatio = 19.0f;
@@ -293,7 +293,7 @@ static void vBalanceControlTask(void *pvParameters)
             BalanceController_SetRef(&g_balance_robot);                         // 设置参考值
             BalanceController_LegLength(&g_balance_robot);                      // 腿长控制 -> rod_f
             BalanceController_LegAngle(&g_balance_robot);                       // 虚拟腿角控制 -> rod_tp
-            // BalanceController_LqrBalance(&g_balance_robot);                     // LQR -> wheel_t + rod_tp
+            BalanceController_LqrBalance(&g_balance_robot);                     // LQR -> wheel_t + rod_tp
             BalanceController_Output(&g_balance_robot);                         // 输出电机命令
         }
         else
@@ -350,14 +350,33 @@ static void vBalancePrintTask(void *pvParameters)
 
     for (;;)
     {
-        const float theta_l = g_balance_robot.leg_state[0].theta;                       // 右腿虚拟腿角
+        const float len_l = g_balance_robot.leg[0].rod.l0;                          // 左腿长度
+        const float len_r = g_balance_robot.leg[1].rod.l0;                          // 右腿长度
+        
+        const float pitch = g_balance_robot.imu.pitch;                              // 俯仰角
+        const float roll = g_balance_robot.imu.roll;                                // 
+        
+        const float theta_l = g_balance_robot.leg_state[0].theta;                   // 左腿虚拟腿角
         const float theta_r = g_balance_robot.leg_state[1].theta;                   // 右腿虚拟腿角速度
         
         const float rod_l = g_balance_robot.cmd[0].rod_tp;
         const float rod_r = g_balance_robot.cmd[1].rod_tp;
+        
+        const float wheel_l = g_balance_robot.cmd[0].wheel_t;                       // 左腿轮电机力矩
+        const float wheel_r = g_balance_robot.cmd[1].wheel_t;                       // 右腿轮电机力矩
 
         BalanceTool_PrintRaw("\r\n[balance_test]\r\n");
-
+        
+        BalanceTool_PrintFloat4Line("len_l",
+                                    len_l,
+                                    "len_r",
+                                    len_r);
+                                    
+        BalanceTool_PrintFloat4Line("pitch",
+                                    pitch,
+                                    "roll",
+                                    roll);
+                                    
         BalanceTool_PrintFloat4Line("theta_l",
                                     theta_l,
                                     "theta_r",
@@ -366,8 +385,23 @@ static void vBalancePrintTask(void *pvParameters)
         BalanceTool_PrintFloat4Line("rod_l",
                                     rod_l,
                                     "rod_r",
-                                    rod_r);                                    
-
+                                    rod_r);                        
+                                    
+        BalanceTool_PrintFloat4Line("wheel_l",
+                                    wheel_l,
+                                    "wheel_r",
+                                    wheel_r);                    
+        
+        /*
+        const float rod_l = g_balance_robot.cmd[0].rod_tp;
+        const float rod_r = g_balance_robot.cmd[1].rod_tp;
+        
+        BalanceTool_PrintFloat4Line("rod_l",
+                                    rod_l,
+                                    "rod_r",
+                                    rod_r);
+        */
+        
         vTaskDelay(pdMS_TO_TICKS(50));
     }
 }

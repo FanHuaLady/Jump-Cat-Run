@@ -36,8 +36,8 @@ namespace
     // =========================
     static constexpr float k_lqr_K[2][6] =
     {
-        { -82.0714f, -11.5743f, -0.2701f, -0.4922f, -134.2395f, -15.1839f },
-        {  73.3496f,   9.4385f,  1.9724f,  2.3286f,  137.6689f,  16.7321f }
+        { -41.8771f, -9.0200f, -22.3564f, -21.1084f, 9.0748f, 2.0588f },
+        {  1.7246f,   0.1281f,  0.8794f,  0.5912f,  142.1579f,  2.5772f}
     };
 
     static inline float BalanceClamp(float x, float min_v, float max_v)
@@ -124,8 +124,8 @@ void BalanceController_SetRef(BalanceRobot* robot)
 
     // 默认虚拟腿角
     // 这里先沿用你之前写死的参考角
-    robot->ref.target_leg_angle[0] = -1.3708f;
-    robot->ref.target_leg_angle[1] = -1.3708f;
+    robot->ref.target_leg_angle[0] = -1.5708f;
+    robot->ref.target_leg_angle[1] = -1.5708f;
 
     // 这些目前先保留为 0，后面如果你要做速度跟踪/转向/横滚控制再接进去
     robot->ref.target_vx = 0.0f;
@@ -230,7 +230,7 @@ void BalanceController_LqrBalance(BalanceRobot* robot)
     for (int i = 0; i < BALANCE_LEG_NUM; ++i)
     {
         robot->cmd[i].wheel_t = wheel_t;
-        robot->cmd[i].rod_tp  = rod_tp;
+        // robot->cmd[i].rod_tp  = rod_tp;
     }
 }
 
@@ -253,7 +253,7 @@ void BalanceController_Output(BalanceRobot* robot)
     {
         BalanceClearMotorCmd(&robot->wheel_motor_cmd[i]);
     }
-
+    
     // =========================
     // 左腿
     // rod_f + rod_tp -> joint_t[2]
@@ -322,7 +322,7 @@ void BalanceController_Output(BalanceRobot* robot)
         robot->joint_motor_cmd[BAL_JOINT_R_1].kd = 0.0f;
         robot->joint_motor_cmd[BAL_JOINT_R_1].enable = true;
     }
-
+   
     // =========================
     // 轮子输出
     // 第一版：左右轮同向同值
